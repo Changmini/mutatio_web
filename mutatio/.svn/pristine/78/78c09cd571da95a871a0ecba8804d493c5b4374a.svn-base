@@ -1,0 +1,79 @@
+package com.mutatio.sis.recommend.vo;
+
+public class RecommendVO {
+	
+	public int thesNo;
+	public String thesKeyword;
+	public int memKeyCnt; // 검색 횟수
+	
+	
+	public String memKeyword;
+	public String commNm;
+	public String thesTitle;
+	public int thesImpFactor;
+
+	
+	public int getThesNo() {
+		return thesNo;
+	}
+
+	public void setThesNo(int thesNo) {
+		this.thesNo = thesNo;
+	}
+
+	public String getThesKeyword() {
+		return thesKeyword;
+	}
+
+	public void setThesKeyword(String thesKeyword) {
+		this.thesKeyword = thesKeyword;
+	}
+
+	public String getMemKeyword() {
+		return memKeyword;
+	}
+
+	public void setMem_keyword(String memKeyword) {
+		this.memKeyword = memKeyword;
+	}
+	
+	public int getMemKeyCnt() {
+		return memKeyCnt;
+	}
+
+	public void setMemKeyCnt(int memKeyCnt) {
+		this.memKeyCnt = memKeyCnt;
+	}
+
+	public String getCommNm() {
+		return commNm;
+	}
+
+	public void setCommNm(String commNm) {
+		this.commNm = commNm;
+	}
+
+	public String getThesTitle() {
+		return thesTitle;
+	}
+
+	public void setThesTitle(String thesTitle) {
+		this.thesTitle = thesTitle;
+	}
+
+	public int thesImpFactor() {
+		return thesImpFactor;
+	}
+
+	public void setImp_factor(int thesImpFactor) {
+		this.thesImpFactor = thesImpFactor;
+	}
+
+	public void setMemKeyword(String memKeyword) {
+		this.memKeyword = memKeyword;
+	}
+
+	
+	
+	
+}

@@ -1,0 +1,180 @@
+package com.mutatio.sis.controller;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.mutatio.sis.exception.BizAccessFailException;
+import com.mutatio.sis.exception.BizNotFoundException;
+import com.mutatio.sis.member.vo.MemberVO;
+import com.mutatio.sis.reply.service.IReplyService;
+import com.mutatio.sis.reply.service.QReplyServiceImpl;
+import com.mutatio.sis.reply.vo.FReplySearchVO;
+import com.mutatio.sis.reply.vo.FReplyVO;
+
+//ResponseBody + Controller
+@RestController
+public class ReplyController {
+	
+	@Inject
+	IReplyService replyService;
+	
+	@RequestMapping(value = "/reply/fReplyList", produces = "application/json; charset=UTF-8")
+	public Map<String, Object> replyList(Model model, FReplySearchVO searchVO, HttpSession session){
+		//service, dao 데이터 가지고 오면 됨
+		/*
+		 * UserVO user = (UserVO) session.getAttribute("USER_INFO"); String userId =
+		 * user.getUserId(); model.addAttribute("userId", userId);
+		 */
+		
+		List<FReplyVO> replyList = replyService.getReplyListByParent(searchVO);
+		
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("result", true);
+		map.put("data", replyList);
+		
+		return map;
+	}
+	
+	@RequestMapping(value = "/reply/fReplyRegist", produces = "application/json; charset=UTF-8")
+	public Map<String, Object> replyRegist(FReplyVO reply, HttpServletRequest request,HttpSession session){
+		//등록해주세요
+		replyService.registReply(reply);
+	
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("result", true);
+		map.put("data", "따로 보낼건 없지 등록 끝");
+		
+		return map;
+	}
+	
+	
+	@RequestMapping(value = "/reply/fReplyModify", produces = "application/json; charset=UTF-8")
+	public Map<String, Object> replyModify(FReplyVO reply, HttpServletRequest request
+			,HttpSession session) throws BizNotFoundException, BizAccessFailException{
+		//수정해주세요
+		System.out.println("USER_INFO = " + session.getAttribute("USER_INFO"));
+		MemberVO user = (MemberVO)session.getAttribute("USER_INFO");
+		reply.setFreeReMemId(user.getMemId());
+		replyService.modifyReply(reply);
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("result", true);
+		map.put("data", "따로 보낼건 없지 등록 끝");
+		
+		return map;
+	}
+	
+	@RequestMapping(value = "/reply/fReplyDelete", produces = "application/json; charset=UTF-8")
+	public Map<String, Object> replyDelete(FReplyVO reply, HttpServletRequest request
+			,HttpSession session) throws BizNotFoundException, BizAccessFailException{
+		//수정해주세요
+		System.out.println(reply);
+		replyService.removeReply(reply);
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("result", true);
+		map.put("data", "삭제");
+		
+		return map;
+	}
+	
+	
+	
+	/*============================================== Question Reply ===============================================*/
+	
+	
+	
+	@Inject
+	QReplyServiceImpl qReplyService;
+	
+	@ResponseBody
+	@RequestMapping(value = "/reply/qReplyList", produces = "application/json; charset=UTF-8")
+	public Map<String, Object> qReplyList(Model model, FReplySearchVO searchVO, HttpSession session){
+		List<FReplyVO> replyList = qReplyService.getReplyListByParent(searchVO);
+		
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("result", true);
+		map.put("data", replyList);
+		
+		return map;
+	}
+	
+	@ResponseBody
+	@RequestMapping(value = "/reply/qReplyRegist", produces = "application/json; charset=UTF-8")
+	public Map<String, Object> qReplyRegist(FReplyVO reply, HttpServletRequest request,HttpSession session){
+		//등록해주세요
+		qReplyService.registReply(reply);
+	
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("result", true);
+		map.put("data", "따로 보낼건 없지 등록 끝");
+		
+		return map;
+	}
+	
+	
+	@ResponseBody
+	@RequestMapping(value = "/reply/qReplyModify", produces = "application/json; charset=UTF-8")
+	public Map<String, Object> qReplyModify(FReplyVO reply, HttpServletRequest request
+			,HttpSession session) throws BizNotFoundException, BizAccessFailException{
+		//수정해주세요
+		System.out.println("USER_INFO = " + session.getAttribute("USER_INFO"));
+		MemberVO user = (MemberVO)session.getAttribute("USER_INFO");
+		reply.setFreeReMemId(user.getMemId());
+		qReplyService.modifyReply(reply);
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("result", true);
+		map.put("data", "따로 보낼건 없지 등록 끝");
+		
+		return map;
+	}
+	
+	@ResponseBody
+	@RequestMapping(value = "/reply/qReplyDelete", produces = "application/json; charset=UTF-8")
+	public Map<String, Object> qReplyDelete(FReplyVO reply, HttpServletRequest request
+			,HttpSession session) throws BizNotFoundException, BizAccessFailException{
+		//수정해주세요
+		System.out.println(reply);
+		qReplyService.removeReply(reply);
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("result", true);
+		map.put("data", "삭제");
+		
+		return map;
+	}
+	
+	
+	
+	
+	
+	
+	
+} // class
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

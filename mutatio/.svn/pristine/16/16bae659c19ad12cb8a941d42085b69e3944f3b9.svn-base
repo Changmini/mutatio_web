@@ -1,0 +1,96 @@
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+<head>
+<%@include file="/WEB-INF/inc/frame.jsp" %>
+<%@include file="/WEB-INF/inc/onload.jsp" %>
+<link rel="stylesheet" type="text/css" href="resources/css/style_quesView.css">
+<title> View </title>
+</head>
+<body>
+<div id="wrap">
+<!-- go -->
+<form action="quesEdit.do" name="setDataForm" method="post">
+	<input type="hidden" name="quesNo" value="1">
+</form>
+
+        <div class="header"></div> <!-- header -->
+    
+    <!-- ===================================================================== -->
+    
+        <div id="sub_title_div"></div> <!-- sub_title_div -->
+    
+    <!-- ===================================================================== -->
+    
+    
+    <div class="content">
+    
+		<table class="tableView design">
+			<thead>
+				<tr>
+					<th scope="cols">Item</th>
+					<th scope="cols" colspan="4">Content</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<th scope="row">Title</th>
+					<td colspan="4">${quesBoard.quesTitle }</td>
+				</tr>
+				<tr>
+					<th scope="row">Writer</th>
+					<td colspan="4">${quesBoard.quesWriter }</td>
+				</tr>
+				<tr>
+					<th scope="row">Regist Date</th>
+					<td colspan="4">${quesBoard.quesRegDate}</td>
+				</tr>
+                <tr><th colspan="4" scope="row">Content</th></tr>
+                <tr>
+					<td colspan="4" style="height: 308px;">
+                        ${quesBoard.quesContent}
+                    </td>
+				</tr>
+			</tbody>
+		</table>
+		<div class="button-event">
+			<button><a href="<%=request.getContextPath() %>/quesBoard.do">목록</a></button>
+			<button><a href="#" data-quesno="${quesBoard.quesNo }">편집하기</a></button>
+		</div>
+    </div> <!-- content -->
+    
+    <footer id="page_footer"></footer><!-- footer -->
+
+</div>
+</body>
+<script type="text/javascript">
+let f = document.forms['setDataForm'];
+$('div.button-event a[data-quesno]').click(function(e) {
+	e.preventDefault();
+	f.quesNo.value = $(this).data('quesno');
+	f.submit();
+});
+</script>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

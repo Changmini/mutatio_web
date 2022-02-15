@@ -1,0 +1,357 @@
+* { /* 화면 전체 default 값 */
+    font-family: 'Noto Sans KR', sans-serif;
+    list-style: none;
+    text-decoration: none;
+    margin:0 auto;
+    padding:0;
+    color: black;
+}
+/* ========================default 설정 끝========================= */
+
+
+.adverDiv {
+    width: 100%;
+    height: 400px;
+    text-align: center;
+    background-color: black;
+    margin-bottom: 1px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+#adverArea {
+    width: 1080px;
+    height: 100%;
+    background-image: url("../images/adver_fire.jpg");
+    background-size: 100% 400px;
+    text-align: center;
+    z-index: 1;
+}
+#adverArea > div {
+    color: #fff;
+    text-align: left;
+    font-weight: bold;
+    font-size: large;
+}
+
+@media(max-width:1200px){
+    #adverArea {
+        width: 720px;
+        height: 70%;
+        margin-top:60px;
+        background-image: url("../images/adver_fire.jpg");
+        background-size: 100% 400px;
+        text-align: center;
+        z-index: 1;
+    }
+    #adverArea > div {
+        color: #fff;
+        text-align: left;
+        font-weight: bold;
+        font-size: large;
+    }
+}
+
+
+/* =========================================================== */
+
+/* 가상 선 */
+.boundary {
+    width: 1080px;
+    margin-bottom: 50px;
+    border-top: 1px solid lightgrey;
+}
+/* 제목 */
+#infoBackground > h2 {
+    font-weight: bold;
+    font-size: 35px;
+    margin-bottom: 30px;
+}
+#infoBackground {
+    width: 100%;
+    height: 530px;
+    text-align: center;
+    margin: 20px 0px 20px 0px;
+}
+.infoArea {
+    width: 1080px;
+    height: 430px;
+    display: flex;
+}
+.infoImg {
+    width: 70%;
+    height: 100%;
+    background-size: 100% 100%;
+    background-color:rgba(0, 0, 0, 0.2);
+	background-blend-mode: multiply;
+}
+.infoImg > h3, h6, p {
+    color: white;
+    padding-left: 20px;
+    text-align: left;
+}
+.infoImg > h6:nth-child(1) {
+	padding-top: 250px;
+}
+.infoImg > h3 {
+	padding-top: 5px;
+	padding-bottom: 5px;
+}
+.infoImg > p {
+	padding-top: 15px;
+}
+.description {                 /* 설명글~ */
+    width: 30%;
+    height: 385px;
+    text-align: left;
+    padding: 5px;
+    margin-left: 20px;
+    border-top: black solid 5px;
+}
+/* 큰 윤곽선 */
+.description > table {
+	margin: 0px;
+	width: 100%;
+	height: 100%;
+	table-layout:fixed;
+	background-color: rgb(245, 245, 245);
+	border-collapse: separate;
+	border-spacing: 0px;
+	text-align: left;
+	line-height: 1.2;
+}
+
+.description > h3{
+	padding-bottom:10px;
+}
+/* 속성 */
+.description > table > tbody > tr > td {
+	border-bottom: 1px solid #ccc;
+	padding: 10px;
+	
+}
+.description table > tbody > tr:nth-child(1) > td {
+	font-weight: bold;
+	color:grey;
+}
+.description table > tbody > tr:nth-child(2) > td {
+	font-weight: bold;
+}
+.description table > tbody > tr:nth-child(4) > td {
+	font-weight: bold;
+}
+.description table > tbody > tr:nth-child(2) > td > span {
+	font-weight: bold;
+	color:rgba(255, 38, 0, 0.89);
+}
+.description table > tbody > tr:nth-child(3) > td > span {
+	font-weight: bold;
+	color:rgba(255, 38, 0, 0.89);
+}
+.description table > tbody > tr:nth-child(4) > td > span {
+	font-weight: bold;
+	color:rgba(255, 38, 0, 0.89);
+}
+.description table > tbody > tr:nth-child(5) > td > span {
+	font-weight: bold;
+	color:red;
+}
+
+.news {                       /* 뉴스 */
+    margin-left: 20px;
+    width: 23%;
+    height: 375px;
+    text-align: left;
+    padding: 10px;
+    border-top: black solid 5px;
+    font-weight: bold;
+}
+/* 큰 틀 */
+.news > article {
+    width: 100%;
+    height: auto;
+    background-color: rgb(245, 245, 245);
+    margin-bottom: 20px;
+}
+/* 뉴스 날짜 */
+.news > article > div:first-child {
+    width: 100%;
+    height: auto;
+    text-align: left;
+    font-weight: bold;
+    color: gray;
+}
+/* 뉴스 내용 */
+.news > article > div:last-child {
+    width: 100%;
+    height: auto;
+    text-align: left;
+    font-weight: bold;
+    color: black;
+}
+
+
+
+@media(max-width:1080px) {
+    .boundary {
+        width: 100%;
+        margin-bottom: 50px;
+        border-top: 1px solid lightgrey;
+    }
+    #infoBackground {
+        width: 100%;
+        height: 700px;
+        text-align: center;
+        margin: 20px 0px 20px 0px;
+    }
+    .infoArea {
+        width: 720px;
+        height: 75%;
+        display: flex;
+    }
+    .infoImg {
+        width: 50%;
+        height: 100%;
+        background-image: url("../images/issue1.jpg");
+        background-size: 100% 100%;
+        background-repeat: no-repeat;
+    }
+    .infoImg > h2 {
+        color: white;
+        margin-top: 430px;
+        padding-left: 20px;
+        text-align: left;
+    }
+    .infoImg > p {
+        color: white;
+        padding-left: 20px;
+        text-align: left;
+    }
+}
+
+
+
+/* =========================================================== */
+
+
+#noticeBackground {
+    width: 100%;
+    height: 450px;
+    margin-top: 100px;
+    margin-bottom: 30px;
+    text-align: center;
+}
+/* 제목 */
+#noticeBackground > h2 {
+    font-weight: bold;
+    font-size: 35px;
+    margin-bottom: 30px;
+}
+.noticeArea {
+    width: 1080px;
+    height: 350px;
+    display: flex;
+}
+.noticeArea > div {
+    width: 33%;
+    height: 100%;
+    text-align: center;
+}
+.noticeArea > div > a > img {
+    width: 300px;
+    height: 80px;
+}
+.noticeArea > div > p {
+    padding: 15px;
+    font-weight: bold;
+}
+
+
+@media(max-width:1080px) {
+    .noticeArea {
+        width: 720px;
+        height: 350px;
+        display: flex;
+    }
+    .noticeArea > div {
+        width: 33%;
+        height: 100%;
+        text-align: center;
+    }
+    .noticeArea > div > a > img {
+        width: 180px;
+        height: 60px;
+    }
+    .noticeArea > div > p {
+        padding: 15px;
+        font-weight: bold;
+    }
+}
+
+/* =========================================================== */
+
+
+#sub_info > ul {
+    width: 100%;
+    height: 500px;
+    display: flex;
+}
+#sub_info > ul > li {
+    width: 50%;
+}
+#sub_info > ul > li > div {
+    text-align: center;
+}
+#sub_info > ul > li > div > h1 {
+    padding-top: 160px;
+}
+#sub_info h1, #sub_info p, .more2 {
+    color: #fff;
+    padding-bottom: 20px;
+}
+#sub_info > ul > li > div > p {
+    font-size: large;
+    font-weight: bold;
+}
+.more2{
+    border:1px solid #fff;
+    width: 150px;
+    height: 20px;
+}
+.more2 > p {
+    padding-top: 7px;
+    cursor: pointer;
+}
+.last_bg1{
+    height: 100%;
+    background-image: url("../images/copyright.jpg");
+    background-size: 100% 100%;
+}
+.last_bg2{
+    height: 100%;
+    background-image: url("../images/Approval.jpg");
+    background-size: 100% 100%;
+}
+@media(max-width:1280px) {
+    #sub_info > ul {
+        width: 100%;
+        height: 500px;
+        display: flex;
+    }
+}
+@media(max-width:1080px) {
+    #sub_info > ul {
+        width: 100%;
+        height: 400px;
+        display: flex;
+    }
+}
+@media(max-width:720px) {
+    #sub_info > ul {
+        width: 720px;
+        height: 400px;
+        display: flex;
+    }
+}
+
+
+/* =========================================================== */

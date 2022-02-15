@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mutatio.sis.free.dao.IFreeDao">
+	
+	<sql id="search">
+		<if test='@org.apache.commons.lang3.StringUtils@isNotBlank(searchWord)'>
+			<choose>
+				<when test='searchType == "T"'>
+					AND free_title LIKE '%' || #{searchWord} || '%'
+				</when>
+				<when test='searchType == "W"'>
+					AND free_writer LIKE '%' || #{searchWord} || '%'
+				</when>
+				<when test='searchType == "C"'>
+					AND free_content LIKE '%' || #{searchWord} || '%'
+				</when>
+			</choose>
+		</if>
+		
+		<if test='@org.apache.commons.lang3.StringUtils@isNotBlank(searchCategory)'>
+			AND free_category = #{searchCategory}
+		</if>
+	</sql>
+
+	<select id="getTotalRowCount" resultType="int" parameterType="com.mutatio.sis.free.vo.FreeSearchVO">
+		SELECT                 
+		      count(*) AS total
+		FROM free_board        
+		WHERE 1=1
+		<include refid="search"></include>
+	</select>
+	
+	<select id="getBoardList" resultType="com.mutatio.sis.free.vo.FreeVO" parameterType="com.mutatio.sis.free.vo.FreeSearchVO">
+    <include refid="common.sql.prePage"></include>            
+					SELECT                                                  
+					      to_char(free_reg_date,'YYYY-MM-DD') AS free_reg_date, 
+					      to_char(free_mod_date,'YYYY-MM-DD') AS free_mod_date, 
+					      free_no      ,     free_title     ,       free_category,
+					                                                        
+					      b.comm_nm AS free_category_nm,                      
+					                                                        
+					      free_writer  ,     free_pass      ,       free_content, 
+					      free_hit       ,       free_del_yn   
+					FROM free_board a                                       
+					     ,code b                                       
+					WHERE free_del_yn ='N'                                    
+					AND a.free_category=b.comm_cd
+					
+					<include refid="search"></include>
+					
+					ORDER BY free_no desc
+		<include refid="common.sql.postPage"></include>		                             			                                 
+	</select>
+	
+	<select id="getBoard" parameterType="int" resultType="com.mutatio.sis.free.vo.FreeVO">
+		SELECT                                                        
+	       to_char(free_reg_date,'YYYY-MM-DD') AS free_reg_date      ,
+	       to_char(free_mod_date,'YYYY-MM-DD') AS free_mod_date      ,
+	       free_no      ,     free_title     ,       free_category     ,
+	       b.comm_nm AS free_category_nm                           ,
+	       free_writer  ,     free_pass      ,       free_content      ,
+	       free_hit       ,       free_del_yn ,
+	       'FREE' as category
+		FROM   free_board a                                             
+		      ,code b                                            
+		WHERE a.free_category=b.comm_cd                                 
+		AND free_no=#{freeNo}                                         
+	</select>
+	<!-- 파라미터가 1개일때는 #안에 아무렇게나 써도됨 -->
+	<!-- #:pstmt= $:stmt -->
+	
+	<update id="increaseHit" parameterType="int">
+		UPDATE FREE_BOARD
+		SET
+		free_hit=free_hit+1
+		WHERE free_no=#{freeNo} 
+	</update>
+	<!-- update는 resultType이 무조건 int라 따로 명시하지않는다 ! -->
+	
+	<update id="updateBoard" parameterType="com.mutatio.sis.free.vo.FreeVO">
+		UPDATE free_board 
+		SET     
+		       free_title=#{freeTitle}           
+		      ,free_category=#{freeCategory}       
+		      ,free_content=#{freeContent}        
+		      ,free_mod_date=sysdate 
+		WHERE free_no=#{freeNo}             
+	</update>
+	<!-- 파라미터가 VO이거나 map이거나 등등... property이름 맞춰서 -->
+	
+	<update id="deleteBoard" parameterType="com.mutatio.sis.free.vo.FreeVO">
+		UPDATE free_board SET          
+		       free_del_yn='Y'             
+		WHERE  free_no=#{freeNo}                  
+	</update>
+	
+	<insert id="insertBoard" parameterType="com.mutatio.sis.free.vo.FreeVO">
+	<selectKey order="BEFORE" keyProperty="freeNo" resultType="int">
+		SELECT seq_free.nextval FROM dual
+	</selectKey>
+		INSERT INTO free_board VALUES(         
+                   #{freeNo} ,   #{freeTitle}, #{freeCategory} ,         
+                  'a001', '1004',  #{freeContent},       
+                  0,   sysdate,  null,    'N', 'FREE' 
+                  )           
+		                 
+	</insert>
+
+	
+
+</mapper>
+

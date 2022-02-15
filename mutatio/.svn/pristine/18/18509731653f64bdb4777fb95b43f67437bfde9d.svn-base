@@ -1,0 +1,39 @@
+package com.mutatio.reply.vo;
+
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
+
+import com.mutatio.sis.common.vo.PagingVO;
+
+public class ReplySearchVO extends PagingVO {
+
+	private int freeReNo;
+	private int freeNo;
+	
+	@Override
+	public String toString() {
+		return ToStringBuilder.reflectionToString(this,ToStringStyle.MULTI_LINE_STYLE);
+	}
+
+	public int getReNo() {
+		return freeReNo;
+	}
+
+	public void setReNo(int freeReParentNo) {
+		this.freeReNo = freeReParentNo;
+	}
+
+	public int getFreeNo() {
+		return freeNo;
+	}
+
+	public void setFreeNo(int freeNo) {
+		this.freeNo = freeNo;
+	}
+	
+	
+
+	
+	
+	
+}

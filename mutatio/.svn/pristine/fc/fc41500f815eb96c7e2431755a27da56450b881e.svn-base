@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.mutatio.sis.recommend.dao.IRecommendDao">
+	
+	<!-- ques search 답글 달린거 -->
+	<sql id="ques_search">
+		<if test='@org.apache.commons.lang3.StringUtils@isNotBlank(isReply)'>
+			<choose>
+				<when test='isReply == "Y"'>
+					and a.ques_no = b.ques_no
+				</when>
+			</choose>
+		</if>
+	</sql>
+	<select id="getRecomWordList" parameterType="String" resultType="com.mutatio.sis.recommend.vo.RecommendVO">
+	select  a.thes_keyword as thes_keyword
+	         ,b.thes_no as thesNo
+       	 ,count(a.thes_keyword) as memKeyCnt
+			  from ai_keyword a, thesis b,(select b.thes_no
+		                                     from member a, bookmark b
+		                                    where a.mem_id = #{memId}) c
+		where a.thes_no = b.thes_no
+		and b.thes_no = c.thes_no
+	group by a.thes_keyword,b.thes_no
+	order by memKeyCnt desc
+	</select>
+	
+  <select id="getKeywordThesisList" parameterType="String" resultType="com.mutatio.sis.recommend.vo.RecommendVO">
+	 select b.thes_keyword,
+	       a.thes_no,
+	       a.thes_imp_factor,
+	       c.comm_nm,
+	       a.thes_title
+	 from thesis a, code c, ai_keyword b
+	 where a.thes_no = b.thes_no
+	 and b.thes_keyword = #{thes_keyword}
+	 and a.thes_category = c.comm_cd
+	 order by a.thes_imp_factor desc
+	</select>
+	
+	<select id="getCountThesisCode" parameterType="String" resultType="com.mutatio.sis.recommend.vo.RecommendVO">
+  select count(tb1.con_code) as cnt,
+             a.thes_no,
+             a.mem_id
+             from mem_refer_thesis a, thesis b, (select distinct a.mem_id,
+                                                                 b.con_code,
+                                                                 c.comm_nm
+                                                   from mem_refer_thesis a, (select a.mem_id, b.con_code
+                                                                                           from member a, concern_code b
+                                                                                           where a.mem_id = b.mem_id) b, code c
+                                                   where a.mem_id = b.mem_id
+                                                      and b.con_code = c.comm_cd) tb1
+            where a.thes_no = b.thes_no
+            and tb1.mem_id = a.mem_id
+            and tb1.con_code = #{commCd} 
+        group by a.thes_no,a.mem_id
+        order by cnt desc
+	</select>
+	
+	<select id="getMemReferNoDateList" parameterType="String" resultType="com.mutatio.sis.thesis.vo.ThesisVO">
+			  select tb.thes_no,
+                  tb.thes_title,
+                  tb.thes_imp_factor,
+                  tb.thes_pu_date,
+                  tb.thes_category,
+                  tb.category_nm,
+                  tb.search_date
+            from(select row_number() over(partition by a.thes_no order by a.search_date desc)as rnum,
+                            a.thes_no as thes_no,
+                            b.thes_title as thes_title,
+                            b.thes_imp_factor as thes_imp_factor,
+                            b.thes_pu_date as thes_pu_date,
+                            b.thes_category as thes_category,
+                            c.comm_nm as category_nm,
+                            a.search_date as search_date
+			from mem_refer_thesis a, thesis b, code c
+			where 1=1 
+			and  a.thes_no = b.thes_no
+			and  b.thes_category = c.comm_cd
+			and mem_id = #{memId}
+			order by a.search_date desc) tb
+           where rnum = 1
+	</select>
+	
+	<select id="getFreeMemberBoardList" parameterType="String" resultType="com.mutatio.sis.free.vo.FreeVO">
+				select a.free_no,
+				       a.free_title,
+				       b.comm_nm as free_category_nm,
+				       a.free_hit,
+				       to_char(a.free_reg_date, 'yyyy-mm-dd') as free_reg_date,
+				       a.free_del_yn
+				from free_board a, code b
+				where 1=1
+				and comm_cd = free_category
+				and free_writer = #{memId}
+				and free_del_yn = 'N'
+				order by free_reg_date desc
+	</select>
+	
+	<select id="getMemFreeRowCount" resultType="int" parameterType="String">
+		SELECT                 
+		      count(*) AS total
+		FROM free_board        
+		WHERE 1=1
+		and free_writer = #{memId}
+		and free_del_yn = 'N'
+	</select>
+	
+	<select id="getMemQuesRowCount" resultType="int" parameterType="String">
+		SELECT                 
+		      count(*) AS total
+		FROM ques_board        
+		WHERE 1=1
+		and ques_writer = #{memId}
+		and ques_del_yn = 'N'
+	</select>
+	
+	<select id="getQuesMemberBoardList" resultType="com.mutatio.sis.question.vo.QuesVO" parameterType="map">
+		<if test='@org.apache.commons.lang3.StringUtils@isNotBlank(isReply)'>	
+			 select a.ques_no,
+	               a.ques_category,
+	               a.comm_nm,
+	               a.ques_title,
+	               a.ques_hit,
+	               a.ques_reg_date,
+	               count(a.ques_no) as re_cnt
+	        from(  
+		</if>
+			select a.ques_no,
+			       a.ques_category,
+			       b.comm_nm,
+			       a.ques_title,
+			       a.ques_hit,
+			       case when a.ques_mod_date is null then to_char(a.ques_reg_date,'yyyy-mm-dd')
+			       else to_char(a.ques_mod_date,'yyyy-mm-dd') end as ques_reg_date
+			from ques_board a, code b
+			where a.ques_category = b.comm_cd
+			and a.ques_del_yn = 'N'
+			and ques_writer = #{memId}
+			order by ques_reg_date desc
+		<if test='@org.apache.commons.lang3.StringUtils@isNotBlank(isReply)'>		
+		) a, ques_reply b
+		     where 1=1
+		  <choose>
+			<when test='isReply == "N"'>
+		   </when>
+		   	<when test='isReply == "Y"'>
+				AND a.ques_no = b.ques_no
+			</when>
+		  </choose>
+              group by 
+                     a.ques_no,
+                     a.ques_category,
+                     a.comm_nm,
+                     a.ques_title,
+                     a.ques_reg_date,
+                     a.ques_hit
+        </if>
+	</select>
+	
+	<select id="getFreeReplyList" parameterType="String" resultType="com.mutatio.sis.reply.vo.FReplyVO">
+			   select a.free_no,
+			          d.mem_name as free_re_mem_name, 
+			          b.free_title,
+                    a.free_re_no,
+                    c.comm_nm as free_category,
+           case when b.free_del_yn = 'Y' then '삭제된 게시물입니다' 
+                   else to_char(a.free_re_content) end as free_re_content,
+           case when a.free_re_mod_date is null then to_char(a.free_re_reg_date,'yyyy-mm-dd')
+			       else to_char(a.free_re_mod_date,'yyyy-mm-dd') end as free_re_reg_date
+    		 from free_reply a, free_board b, code c, member d
+    		 where 1=1
+    		and b.free_writer = d.mem_id
+		    and a.free_no = b.free_no
+		    and b.free_category = c.comm_cd
+		    and free_re_mem_id = #{memId}
+		    order by free_re_reg_date desc
+	</select>
+	
+	
+	
+	
+</mapper>

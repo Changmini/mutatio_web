@@ -1,0 +1,87 @@
+package com.mutatio.sis.reply.web;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.mutatio.sis.exception.BizAccessFailException;
+import com.mutatio.sis.exception.BizNotFoundException;
+import com.mutatio.sis.login.vo.UserVO;
+import com.mutatio.sis.reply.service.IReplyService;
+import com.mutatio.sis.reply.vo.ReplySearchVO;
+import com.mutatio.sis.reply.vo.ReplyVO;
+
+//ResponseBody + Controller
+@RestController
+public class ReplyController {
+	
+	@Inject
+	@Qualifier("replyServiceImpl")
+	IReplyService replyService;
+	
+	@RequestMapping(value = "/reply/replyList", produces = "application/json; charset=UTF-8")
+	public Map<String, Object> replyList(Model model, ReplySearchVO searchVO, HttpSession session){
+		//service, dao 데이터 가지고 오면 됨
+		/*
+		 * UserVO user = (UserVO) session.getAttribute("USER_INFO"); String userId =
+		 * user.getUserId(); model.addAttribute("userId", userId);
+		 */
+		
+		List<ReplyVO> replyList = replyService.getReplyListByParent(searchVO);
+		
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("result", true);
+		map.put("data", replyList);
+		
+		return map;
+	}
+	
+	@RequestMapping(value = "/reply/replyRegist", produces = "application/json; charset=UTF-8")
+	public Map<String, Object> replyRegist(ReplyVO reply, HttpServletRequest request,HttpSession session){
+		//등록해주세요
+		replyService.registReply(reply);
+	
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("result", true);
+		map.put("data", "따로 보낼건 없지 등록 끝");
+		
+		return map;
+	}
+	
+	
+	@RequestMapping(value = "/reply/replyModify", produces = "application/json; charset=UTF-8")
+	public Map<String, Object> replyModify(ReplyVO reply, HttpServletRequest request
+			,HttpSession session) throws BizNotFoundException, BizAccessFailException{
+		//수정해주세요
+		UserVO user = (UserVO)session.getAttribute("USER_INFO");
+		reply.setFreeReMemId(user.getUserId());
+		replyService.modifyReply(reply);
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("result", true);
+		map.put("data", "따로 보낼건 없지 등록 끝");
+		
+		return map;
+	}
+	
+	@RequestMapping(value = "/reply/replyDelete", produces = "application/json; charset=UTF-8")
+	public Map<String, Object> replyDelete(ReplyVO reply, HttpServletRequest request
+			,HttpSession session) throws BizNotFoundException, BizAccessFailException{
+		//수정해주세요
+		System.out.println(reply);
+		replyService.removeReply(reply);
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("result", true);
+		map.put("data", "삭제");
+		
+		return map;
+	}
+}

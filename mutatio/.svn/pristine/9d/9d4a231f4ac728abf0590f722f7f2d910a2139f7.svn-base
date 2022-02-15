@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mutatio.sis.reply.dao.IReplyDao">
+
+	<select id="getReplyCountByParent" resultType="int" parameterType="com.mutatio.sis.reply.vo.ReplySearchVO">
+		SELECT count(*)
+		FROM free_reply
+		WHERE free_no = #{freeNo}
+	</select>
+	
+	<select id="getReplyListByParent" resultType="com.mutatio.sis.reply.vo.ReplyVO" parameterType="com.mutatio.sis.reply.vo.ReplySearchVO">
+		<include refid="common.sql.prePage"></include>
+		   SELECT free_re_no
+			       ,LEVEL AS COMMENTLEVEL
+			       ,FREE_RE_MEM_ID
+			       ,mem_name as free_re_mem_name
+			       ,FREE_RE_PARENT_NO 
+			       ,CASE WHEN LEVEL =1 THEN '' 
+			        WHEN LEVEL =2 THEN 'ㄴ'
+			        ELSE '   ㄴ' END ||FREE_RE_CONTENT  AS RE_CONTENT
+			       ,FREE_RE_REG_DATE
+			       ,FREE_RE_MOD_DATE 
+			FROM (SELECT * 
+			      FROM free_reply
+			      WHERE free_no = #{freeNo} 
+			      AND free_re_del_yn = 'N'
+			      ) c, member d 
+			WHERE c.free_re_mem_id = d.mem_id
+			START WITH  FREE_RE_PARENT_NO =0
+			CONNECT BY PRIOR free_re_no = FREE_RE_PARENT_NO 
+			ORDER SIBLINGS BY free_re_no 
+		<include refid="common.sql.postPage"></include>
+	</select>
+	
+	<insert id="insertReply" parameterType="com.mutatio.sis.reply.vo.ReplyVO">
+		INSERT INTO free_reply (
+									 free_no
+		      						,free_re_no 
+		      						,free_re_parent_no
+		   							,free_re_mem_id   
+		   							,free_re_content  
+		   							,free_re_reg_date 
+		   							,free_re_mod_date) 
+		   	 VALUES (
+		     #{freeNo} 
+		     ,SEQ_FREE_REPLY.nextval 
+		     ,#{freeReParentNo}
+		     ,#{freeReMemId}
+		     <!-- ,#{freeReMemId}          -->
+		     ,#{freeReContent} 
+		     ,sysdate
+		     ,null
+			  )
+	</insert>
+	
+<update id="updateReply" parameterType="com.mutatio.sis.reply.vo.ReplyVO">
+update free_reply set
+	 free_re_content = #{freeReContent}
+	,free_re_mod_date = sysdate
+where free_re_no=#{freeReNo}
+
+</update>
+<delete id="deleteReply" parameterType="com.mutatio.sis.reply.vo.ReplyVO">
+update free_reply set
+	free_re_del_yn = 'Y'
+where free_re_no=#{freeReNo}
+</delete>
+
+
+</mapper>

@@ -1,0 +1,15 @@
+package com.mutatio.sis.recommend.dao;
+
+import java.util.List;
+
+import org.apache.ibatis.annotations.Mapper;
+
+import com.mutatio.sis.recommend.vo.RecommendVO;
+
+@Mapper
+public interface IRecommendDao {
+	
+	public List<RecommendVO> getRecomWordList(String memId);
+	public List<RecommendVO> getKeywordThesisList(String thesNo);
+
+}

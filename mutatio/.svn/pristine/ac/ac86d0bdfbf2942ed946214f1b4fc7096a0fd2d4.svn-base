@@ -1,0 +1,24 @@
+package com.mutatio.sis.recommend.dao;
+
+import java.util.List;
+
+import org.apache.ibatis.annotations.Mapper;
+
+import com.mutatio.sis.free.vo.FreeVO;
+import com.mutatio.sis.recommend.vo.RecommendVO;
+import com.mutatio.sis.thesis.vo.ThesisVO;
+
+@Mapper
+public interface IRecommendDao {
+	
+	public List<RecommendVO> getRecomWordList(String memId);
+	public List<RecommendVO> getKeywordThesisList(String thesNo);
+	public List<RecommendVO> getCountThesisCode(String commCd);
+	
+	// 조회이력검색
+	public List<ThesisVO> getMemReferNoDateList(String memId);
+	
+	// 내가 쓴 자유게시판 글목록
+	public List<FreeVO> getFreeMemberBoardList(String memId);
+	public int getTotalRowCount(String memId);
+}

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.mutatio.sis.member.dao.IMemberDao">
+	
+	<insert id="insertBookmark" parameterType="String">
+		insert into bookmark(
+			mem_id, thes_no
+		)values (
+			#{memId}, #{thesNo}
+		)
+	</insert>
+	
+	<select id="getMemBookMark" resultType="int" parameterType="String">
+		select thes_no
+		 from bookmark
+		 where 1=1 
+		 and mem_id = #{memId}
+	</select>
+
+	<select id="getMarkDate" resultType="String" parameterType="String">
+		 select to_char(mark_date,'yyyy-mm-dd') as mark_date
+		 from bookmark
+		 where 1=1 
+		 and mem_id = #{memId}
+		 and thes_no = #{thesNo}
+	</select>
+	
+	<delete id="deleteBookMark" parameterType="String">
+		delete from bookmark
+		where mem_id=#{memId}
+		and thes_no=#{thesNo}
+	</delete> 
+	
+</mapper>

@@ -1,0 +1,43 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+<head>
+
+<meta charset="UTF-8">
+<title>회원정보 상세보기</title>
+</head>
+<body>
+	<div class="container">
+		<h3>회원정보 상세보기</h3>
+		<table border="1">
+				<tr>
+					<th>아이디</th>
+					<td>${member.memId}</td>
+				</tr>
+				<tr>
+					<th>회원명</th>
+					<td>${member.memName}</td>
+				</tr>
+				<tr>
+					<th>비밀번호</th>
+					<td>${member.memPass}</td>
+				</tr>
+				<tr>
+					<th>생일</th>
+					<td>${member.memBir}</td>
+				</tr>
+				<tr>
+					<th>전화번호</th>
+					<td>${member.memHp}</td>
+				</tr>
+				<tr>
+					<th>이메일</th>
+					<td>${member.memMail}</td>
+				</tr>
+		</table>
+		<button type="button"><a href="home.do">목록으로</a></button>
+		<button type="button"><a href="memberEdit.do?memId=${member.memId}">수정</a></button>
+	</div>
+</body>
+</html>

@@ -1,0 +1,93 @@
+package com.mutatio.sis.question.service;
+
+import java.util.List;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Service;
+
+import com.mutatio.sis.exception.BizNotEffectedException;
+import com.mutatio.sis.exception.BizNotFoundException;
+import com.mutatio.sis.exception.BizUserNotMatchedException;
+import com.mutatio.sis.member.vo.MemberVO;
+import com.mutatio.sis.question.dao.IQuestionDao;
+import com.mutatio.sis.question.vo.QuesVO;
+import com.mutatio.sis.question.vo.QuestionSearchVO;
+
+@Service
+public class QuestionService {
+	
+	@Inject
+	IQuestionDao iQuestionDao;
+	
+	public List<QuesVO> getQuesBoardList(QuestionSearchVO searchVO) {
+		int totalRowCount = iQuestionDao.getTotalRowCount();
+		searchVO.setTotalRowCount(totalRowCount);
+		searchVO.pageSetting();
+		
+		List<QuesVO> quesList = iQuestionDao.getQuesBoardList(searchVO);
+		return quesList;
+	}
+
+	public QuesVO getQuesBoard(int quesNo) throws BizNotFoundException {
+		QuesVO quesBoard = iQuestionDao.getQuesBoard(quesNo);
+		if (quesBoard == null) throw new BizNotFoundException(); 
+		return quesBoard;
+	}
+	
+	public void checkRole(MemberVO user, QuesVO quesBoard) throws BizUserNotMatchedException {
+		System.out.println("user: "+user +"  quesBoard: "+quesBoard);
+		if( user == null // first- inspect null
+				|| !(user.getMemId().equals(quesBoard.getQuesWriter()))
+				/* 관리자 추가 권한*/ ) throw new BizUserNotMatchedException();
+	} 
+
+	public void questModify(QuesVO quesVO) throws BizNotFoundException, BizNotEffectedException {
+		QuesVO quesBoard = iQuestionDao.getQuesBoard(quesVO.getQuesNo());//
+		if (quesBoard == null) throw new BizNotFoundException();         //
+		if (quesVO.getQuesThesisNo() == 0) {                             // not set QuesThesisNo
+			quesVO.setQuesThesisNo(quesBoard.getQuesThesisNo());
+		}
+		int cnt = iQuestionDao.questModify(quesVO);
+		if (cnt < 1) return ; throw new BizNotEffectedException();       // 
+	}
+
+	public void questDelete(QuesVO quesVO) throws BizNotEffectedException, BizNotFoundException {
+		QuesVO quesBoard = iQuestionDao.getQuesBoard(quesVO.getQuesNo());
+		if (quesBoard == null) throw new BizNotFoundException();
+		System.out.println(quesVO.getQuesNo());
+		int cnt =  iQuestionDao.questDelete(quesVO);
+		if (cnt < 1) throw new BizNotEffectedException(); 
+	}
+
+	public void insertQuesBoard(QuesVO quesVO) throws BizNotEffectedException {
+		int cnt = iQuestionDao.insertQuesBoard(quesVO);
+		if (cnt < 1) throw new BizNotEffectedException();
+		
+	}
+	
+	
+	
+	
+	
+} // class
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

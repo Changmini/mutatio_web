@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mybatis-spring="http://mybatis.org/schema/mybatis-spring"
+	xsi:schemaLocation="http://mybatis.org/schema/mybatis-spring http://mybatis.org/schema/mybatis-spring-1.2.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd">
+
+<bean id="dataSource" class="org.apache.commons.dbcp2.BasicDataSource" destroy-method="close">
+	<property name= "driverClassName" value="#{appconf['driverClassName']}" />
+	<property name= "url" value="#{appconf['url']}" />
+	<property name= "username" value="#{appconf['username']}" />
+	<property name= "password" value="#{appconf['password']}" />
+	<property name="maxTotal" value="#{appconf['maxTotal']}"/>
+	<property name="minIdle" value="#{appconf['minIdle']}"/>
+	<property name="validationQuery" value="#{appconf['validationQuery']}"/>
+	<property name= "poolPreparedStatements" value="#{appconf['poolPreparedStatements']}" />
+	<property name= "defaultAutoCommit" value="#{appconf['defaultAutoCommit']}" />
+</bean>
+
+<!-- SqlSession setup for MyBatis Database Layer -->
+<bean id="sqlSessionFactoryBean" class="org.mybatis.spring.SqlSessionFactoryBean">
+	<property name="dataSource" ref="dataSource" />
+	<property name="configLocation" value="WEB-INF/classes/mybatis/mybatis-config.xml" />
+	<property name="mapperLocations" value="WEB-INF/classes/mybatis/mapper/*.xml" />
+</bean>
+
+<mybatis-spring:scan base-package="com.mutatio" annotation="org.apache.ibatis.annotations.Mapper" />
+
+</beans>

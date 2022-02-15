@@ -1,0 +1,68 @@
+package com.mutatio.sis.question.service;
+
+import java.util.List;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Service;
+
+import com.mutatio.sis.question.dao.IQuestionDao;
+import com.mutatio.sis.question.vo.QuesVO;
+import com.mutatio.sis.question.vo.QuestionSearchVO;
+
+@Service
+public class QuestionService {
+	
+	@Inject
+	IQuestionDao iQuestionDao;
+	
+	public List<QuesVO> getQuesBoardList(QuestionSearchVO searchVO) {
+		int totalRowCount = iQuestionDao.getTotalRowCount();
+		searchVO.setTotalRowCount(totalRowCount);
+		searchVO.pageSetting();
+		
+		List<QuesVO> quesList = iQuestionDao.getQuesBoardList(searchVO);
+		return quesList;
+	}
+
+	public QuesVO getQuesBoard(int quesNo) {
+		QuesVO quesBoard = iQuestionDao.getQuesBoard(quesNo);
+		if (quesBoard == null) return null; // catch error code 
+		return quesBoard;
+	}
+
+	public void questModify(QuesVO quesVO) {
+		int cnt = iQuestionDao.questModify(quesVO);
+		if (cnt < 1) return ; // catch error
+	}
+
+	public void questDelete(QuesVO quesVO) {
+		int cnt =  iQuestionDao.questDelete(quesVO);
+		if (cnt < 1) return ; // catch error 
+	}
+	
+	
+	
+	
+	
+} // class
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

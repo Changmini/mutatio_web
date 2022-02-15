@@ -1,0 +1,7 @@
+package com.mutatio.common.valid;
+
+public interface Step1 {
+
+	
+	
+}

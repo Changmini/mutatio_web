@@ -1,0 +1,44 @@
+package com.mutatio.sis.controller;
+
+import java.util.List;
+
+import javax.inject.Inject;
+import javax.servlet.http.HttpSession;
+
+import org.slf4j.Logger;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.mutatio.sis.member.service.MemberService;
+import com.mutatio.sis.member.vo.MemberSearchVO;
+import com.mutatio.sis.member.vo.MemberVO;
+
+@Controller
+public class ManagerController {
+	
+	@Inject
+	private MemberService memberService;
+	
+	private Logger logger = org.slf4j.LoggerFactory.getLogger(this.getClass());
+	
+		// 회원 목록
+		@RequestMapping("memberList.do")
+		public String memberList(Model model, MemberSearchVO searchVO) {
+			  List<MemberVO> memberList = memberService.getMemList(searchVO);		  
+			  model.addAttribute("memberList",memberList);
+			return "manager/memberList";
+		}	
+		
+		//회원정보(뷰)
+		@GetMapping(value = "/memberView.do")
+		public String memberView(Model model, HttpSession session) {
+			//header에서 사용(USER_INFO)
+			String memId = ((MemberVO)session.getAttribute("USER_INFO")).getMemId();
+			MemberVO member = memberService.getMember(memId);
+			model.addAttribute("member", member);
+			return "manager/memberView";
+		}	
+
+}

@@ -1,0 +1,158 @@
+package com.mutatio.sis.member.service;
+
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.inject.Inject;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.ModelAttribute;
+
+import com.mutatio.sis.code.vo.ConCodeVO;
+import com.mutatio.sis.exception.BizDuplicateKeyException;
+import com.mutatio.sis.exception.BizNotEffectedException;
+import com.mutatio.sis.exception.BizNotFoundException;
+import com.mutatio.sis.member.dao.IMemberDao;
+import com.mutatio.sis.member.vo.MemberSearchVO;
+import com.mutatio.sis.member.vo.MemberVO;
+
+@Service
+public class MemberService {
+	
+	@Inject
+	IMemberDao memberDao;	
+	
+	private Logger logger = LoggerFactory.getLogger(this.getClass());
+	
+	public List<MemberVO> getMemList(MemberSearchVO searchVO) {
+		int totalRowCount = memberDao.getTotalRowCount(searchVO);
+		searchVO.setTotalRowCount(totalRowCount);;
+		searchVO.pageSetting();
+
+		// 관심분야 가져오기
+		List<MemberVO> memberList = memberDao.getMemberList(searchVO);
+		for (MemberVO vo : memberList) {
+			String memId = vo.getMemId();
+			vo.setConCode(getConcernField(memId)[0]);
+			vo.setConCodeName(getConcernField(memId)[1]);
+		}
+		return memberList;
+	}	
+	// 회원가입
+	public void joinMember(MemberVO member) throws BizNotEffectedException {
+		int cnt = memberDao.joinMember(member);
+		if(cnt<1) throw new BizNotEffectedException();
+		
+		//관심분야 code를 memId와 맞춰서 저장 
+		HashMap<String, String> map = new HashMap<String, String>();
+		String[] conCode = member.getConCode();
+		for (int i = 0; i < conCode.length; i++) {
+			map.put("memId", member.getMemId());
+			map.put("conCode", conCode[i]);
+			cnt = memberDao.joinConCode(map);
+			if(cnt<1) throw new BizNotEffectedException();	
+		}
+	}	
+	
+	// 회원정보 수정(보여주기)
+	public MemberVO getMember(String memId) {
+		MemberVO member = memberDao.getMember(memId);
+		member.setConCode(getConcernField(memId)[0]);
+		member.setConCodeName(getConcernField(memId)[1]);
+		return member;
+	}
+	public MemberVO getMember(String memId, String check) {
+		if (check.equals("check")) {
+			MemberVO member = memberDao.getMember(memId);
+			return member;
+		}
+		return null;
+	}	
+	
+	// 회원정보 수정(수정한것 넘기기)
+	public void modifyMember(MemberVO member) throws BizNotEffectedException{
+		// interceptor를 사용할 것이니 회원이 존재하는지를 확인할 필요는 없지 않을까?
+		logger.info("modifyMember bef::{}",member);
+		int cnt = memberDao.updateMember(member);
+		if(cnt <= 0) throw new BizNotEffectedException();
+		
+		List<Integer> ccId = memberDao.getCcId(member);
+		Map<String, Object> map = new HashMap<String, Object>();
+		for (int i = 0; i < 2; i++) {
+			map.put("ccId", ccId.get(i));
+			map.put("conCode", member.getConCode()[i]);
+			logger.info("modifyMember aft::{}",map);
+			cnt = memberDao.updateConCode(map);
+			if(cnt<1) throw new BizNotEffectedException();									
+		}
+	}
+	
+	// 회원정보 삭제
+	public void deleteMember(String memId) 
+			throws BizNotEffectedException, BizNotFoundException{
+		MemberVO vo = memberDao.getMember(memId);
+		if(vo == null) throw new BizNotFoundException();
+		int cnt = memberDao.deleteMember(memId);
+		if(cnt <= 0) throw new BizNotEffectedException();
+	}
+
+	// 관심분야 
+	/** 
+	 * <pre>
+	 * 	연습겸 map을 vo로 바꿔보세요
+	 * <pre>
+	 * @methodName : getConcernField
+	 * @author     : pc12
+	 * @date       : 2021.12.23
+	 * @param memId
+	 * @return arr[0] : conCode , arr[1] : conCodeName
+	 */
+	public String[][] getConcernField(String memId) {
+		List<Map<String, String>> cList = memberDao.getConcernField(memId);
+		String[] cc = {cList.get(0).get("CON_CODE"), cList.get(1).get("CON_CODE")};
+		String[] ccn = {cList.get(0).get("COMM_NM"), cList.get(1).get("COMM_NM")};
+		String[][] _union = {cc, ccn};
+		logger.info("관심줘::::{}",_union);
+		return _union;
+	}
+	
+	// 즐겨찾기 삽입
+	public void insertBookmark(HashMap<String, Object> paramMap) throws BizDuplicateKeyException {
+		int cnt = memberDao.insertBookmark(paramMap);
+		 if(cnt<1) throw new BizDuplicateKeyException();
+	}
+	
+   // 즐겨찾기 출력
+	public MemberVO getMemBookMark(String memId) throws BizNotEffectedException {
+		int[] bookMark = memberDao.getMemBookMark(memId);
+		if(bookMark == null) {
+			throw new BizNotEffectedException();
+		}
+		MemberVO member = getMember(memId);
+		member.setThesNo(bookMark);
+		return member;
+	}
+	
+	// 날짜 가져오기.ㅠ쓸데없이길어졋당..
+	public String getMarkDate(HashMap<String, Object> paramMap) throws BizNotEffectedException {
+		 String date = memberDao.getMarkDate(paramMap);
+		 if(date == null) throw new BizNotEffectedException();
+		 return date;
+	}
+	
+	// 즐찾 삭쩨..
+	public void deleteBookmark(HashMap<String, Object> paramMap) throws BizNotEffectedException{
+		int cnt = memberDao.deleteBookMark(paramMap);
+		if(cnt < 1) throw new BizNotEffectedException();
+	}
+	
+	
+	
+	
+	
+}
+

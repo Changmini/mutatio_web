@@ -1,0 +1,146 @@
+package com.mutatio.sis.controller;
+
+import java.io.IOException;
+import java.util.List;
+
+import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.groups.Default;
+
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.mutatio.attach.vo.AttachVO;
+import com.mutatio.code.service.ICommCodeService;
+import com.mutatio.common.util.StudyAttachUtils;
+import com.mutatio.common.valid.Regist;
+import com.mutatio.free.service.IFreeService;
+import com.mutatio.free.vo.FreeSearchVO;
+import com.mutatio.free.vo.FreeVO;
+import com.mutatio.sis.code.vo.CodeVO;
+import com.mutatio.sis.common.vo.ResultMessageVO;
+import com.mutatio.sis.exception.BizNotEffectedException;
+import com.mutatio.sis.exception.BizNotFoundException;
+
+@Controller
+public class FreeController {
+	
+	@Inject
+	@Qualifier("freeServiceImpl")
+	IFreeService freeService;
+	
+	@Inject
+	@Qualifier("commCodeServiceImpl")
+	ICommCodeService codeService;
+	
+	@Inject
+	StudyAttachUtils attachUtils;
+	
+   
+	// 하는 역할 : return값을 model 담음
+	// 모든 requestMapping 실행전에 실행되는 메소드
+	@ModelAttribute("codeList")
+	public List<CodeVO> getCodeList(){
+		System.out.println("getCodeList");
+		return codeService.getCodeListByParent("FC00");
+	}
+
+	
+	@RequestMapping("/free/free_list.do")
+	public String freeList(Model model, FreeSearchVO searchVO,HttpServletRequest req) {		
+		System.out.println("검색어 :::::" + searchVO.getSearchWord());
+		System.out.println("서치타입 :::::" + searchVO.getSearchType());
+		model.addAttribute("searchVO", searchVO);
+		List<FreeVO> freeBoardList = freeService.getBoardList(searchVO);
+		model.addAttribute("freeBoardList", freeBoardList);
+		
+		return "/free/free_list";
+	}
+	
+	@RequestMapping("/free/free_view.do")
+	public String freeView(Model model,@RequestParam(value = "freeNo", required = true) int freeNo) {
+		ResultMessageVO resultMessageVO = new ResultMessageVO();
+		try {
+			FreeVO freeBoard = freeService.getBoard(freeNo);
+			model.addAttribute("freeBoard", freeBoard);
+		} catch(BizNotFoundException ebf) {
+			resultMessageVO.setResult(false);
+			resultMessageVO.setTitle("FreeBoard찾기실패");
+			resultMessageVO.setMessage("FreeBoard찾는데 실패했습니다. 글을 찾을 수 없습니다.");
+			resultMessageVO.setUrl("/free/freeList.wow");
+			resultMessageVO.setUrlTitle("목록으로");
+			model.addAttribute("resultMessageVO", resultMessageVO);
+			model.addAttribute("ebf", ebf);
+			return"common/message";
+		} catch(BizNotEffectedException ebe) {
+			resultMessageVO.setResult(false);
+			resultMessageVO.setTitle("조회수 증가 실패");
+			resultMessageVO.setMessage("FreeBoard찾는데 실패했습니다. 조회수를 증가시킬 수 없습니다.");
+			resultMessageVO.setUrl("/free/freeList.wow");
+			resultMessageVO.setUrlTitle("목록으로");
+			model.addAttribute("resultMessageVO", resultMessageVO);
+			model.addAttribute("ebe", ebe);
+			return"common/message";
+		}
+		
+		return "/free/free_view";
+	}
+	
+	
+	@RequestMapping(value = "/free/free_form.do")
+	public String freeForm(@ModelAttribute("freeBoard")FreeVO freeBoard) {
+		
+		return "/free/free_form";
+	}
+	
+	// 등록 Regeist
+	@RequestMapping(value = "/free/free_regist.do", method = RequestMethod.POST)
+	public String freeRegist(Model model
+			,@Validated(value = {Default.class, Regist.class}) @ModelAttribute("freeBoard")FreeVO freeBoard
+			,BindingResult error
+			,@RequestParam(value= "boFiles", required = false)MultipartFile[] boFiles) throws IOException {
+
+		System.out.println("content :::: " + freeBoard.getFreeContent());
+		System.out.println("title :::: " +freeBoard.freeTitle);
+		System.out.println("category :::: " +freeBoard.freeCategory);
+		System.out.println("file :::: " +boFiles);
+		if(error.hasErrors()) {
+			return "/free/free_form";
+		}
+		ResultMessageVO resultMessageVO = new ResultMessageVO();
+		try{
+			// boFiles(MultiPartFile) 가지고 List<AttachVO> 만드는 함수
+			// 만들 때, 실제로 파일 업로드 
+			if(boFiles != null) {
+				List<AttachVO> attaches = attachUtils.getAttachListByMultiparts(boFiles,"FREE", "free");
+				freeBoard.setAttaches(attaches);
+			}
+			
+			freeService.registBoard(freeBoard);
+			
+			resultMessageVO.setResult(true);
+			resultMessageVO.setTitle("FreeBoard 생성 성공");
+			resultMessageVO.setMessage("FreeBoard 생성에 성공하였습니다.");
+			resultMessageVO.setUrl("free_list.do");
+			resultMessageVO.setUrlTitle("목록으로");
+			model.addAttribute("resultMessageVO", resultMessageVO);
+		} catch(BizNotEffectedException ebe) {
+			resultMessageVO.setResult(true);
+			resultMessageVO.setTitle("FreeBoard생성실패");
+			resultMessageVO.setMessage("FreeBoard 생성에 실패하였습니다. 글을 생성할 수 없습니다.");
+			resultMessageVO.setUrl("free_list.do");
+			resultMessageVO.setUrlTitle("목록으로");
+			model.addAttribute("resultMessageVO", resultMessageVO);
+		}
+		
+		return "common/message";
+	}
+}

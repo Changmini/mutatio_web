@@ -1,0 +1,315 @@
+*{margin:0 auto; padding: 0;}
+
+body {
+    /*
+      vh는 높이값의 100분 1단위입니다.
+      예를 들어 브라우저 높이값이 900px
+      일 때 vh는 9px라는 뜻입니다.
+    */
+    height: 100vh;
+    background-color: red;
+    text-align: center;
+    background: url("../images/login.jpg"); 
+    background-size: cover;
+
+}
+
+.join_form {  			/* div 전체 */
+    position: relative;
+    top: 12%;
+    width: 400px;
+    height: 800px;
+    z-index: 2;
+    background-color:yellow;
+
+}
+
+.join_form > h1 {
+    color: #fff;
+    font-size: 30px;
+    margin-top: 20px;
+    /* text-align: center; */
+}
+/* 아이디, 비번 글씨 */
+.join_rowId > h3 {
+	font-size: 15px;
+	margin-botton: 8px;
+	margin-right: 240px; 
+	padding:8px;
+}
+
+.join_rowPs > h3 {
+	font-size: 15px;
+	margin-botton: 8px;
+	margin-right: 220px; 
+	padding:8px;
+}
+
+/* 비밀번호 재확인 오른쪽으로 이동하기 */
+/* .join_rowId > h3 {
+	font-size: 15px;
+	margin-botton: 8px;
+	margin-right: 240px; 
+	padding:8px;
+} */
+
+/* 아이디, 비번 상자 */
+.ps_box_int_id > input {
+	background-color: green;
+	width: 80%;
+	height: 40px;
+	border-radius: 8px;
+}
+.ps_box_int_pass > input {
+	background-color: green;
+	width: 80%;
+	height: 40px;
+	border-radius: 10px;
+}
+.ps_box_int_passCh > input {
+	background-color: green;
+	width: 80%;
+	height: 40px;
+	border-radius: 10px;
+	margin-left: 35px;
+}
+
+
+/* 비번 재입력 사용 가능 문구 */
+.join_rowPs {
+	position: relative;
+	height: 180px;
+}
+.wa-blind {
+	color: red;
+	position: absolute;
+	bottom: 0;
+	left: 50px;
+	font-size: 11px;
+}
+
+.ps_box_int_passCh > input {
+	margin-right: 100px;
+}
+
+/* 이름, 생년월일 글자 */
+.join_rowNm > h3 {
+	font-size: 15px;
+	margin-botton: 8px;
+	margin-right: 260px; 
+	padding:8px;
+}
+
+.join_rowBir > h3 {
+	font-size: 15px;
+	margin-botton: 8px;
+	margin-right: 240px; 
+	padding:8px;
+}
+
+/* 이름, 생년월일 박스 */
+.ps_box_right_space > input {
+	background-color: green;
+	width: 80%;
+	height: 40px;
+	border-radius: 10px;
+	margin-left: -5px;
+}
+.join_rowNm > h3{
+	margin-left: 20px;
+}
+
+/* 이름 필수입력 문구 */
+.row_group2 {
+	position: relative;
+	height: 180px;
+}
+.error_next_box {
+	color: red;
+	position: absolute;
+	bottom: 82px;
+	left: 160px;
+	font-size: 11px;
+}
+
+/* 생년월일 박스 정렬 */
+.join_rowBir {
+	width: 100%;
+	margin:10px auto;	
+}
+.join_rowBir > h3 {
+	margin-left: 10px;
+}
+
+.bir_wrap {
+	width:300px;
+	height:50px; 
+}
+
+.bir_box > input {
+	width:280px;
+	height:25px; 
+	border-radius: 5px;
+}
+
+/* 직업 */
+.join_rowJb {
+	width: 320px;
+	height: 70px;
+	background-color: green;
+	margin-top: -30px;
+}
+.join_rowJb > h3 {
+	font-size: 15px;
+	margin-botton: 8px;
+	margin-right: 240px; 
+	padding:8px;
+} 
+.JbCode > select {
+	width: 90%;
+	border-radius: 2px;
+} 
+
+/* 관심분야 */
+.join_rowCc {
+	width: 320px;
+	margin-top: -5px;
+	height: 130px;
+	background-color: green;
+}
+.join_rowCc > h3 {
+	font-size: 15px;
+	margin-botton: 8px;
+	margin-right: 220px; 
+	padding:8px;
+}
+.join_rowCc > h1 {
+	font-size: 11px;
+	color: red;
+	font-weight: normal;
+	margin-right: 170px;
+	margin-top: -5px;
+}
+
+.checkList {
+	padding: 5px 5px 10px 30px;
+	margin-top: 10px;
+	margin-right: 25px;
+}
+
+.checkList1 > input {
+	display: inline-block;
+	width:30px;
+}
+
+.checkList2 > input {
+	display: inline-block;
+	width: 30px;
+}
+
+/* 이메일 */
+.row_group3 {
+	width: 80%;
+	height: 100px;
+	background-color: orange;
+	margin-top: 175px;
+}
+
+.join_mail > h3{
+	font-size: 15px;
+	margin-botton: 8px;
+	margin-right: 220px; 
+	padding:8px;
+}
+.ps_box_mail > input {
+	background-color: green;
+	width: 80%;
+	height: 40px;
+	border-radius: 10px;
+}
+
+.join_btn > button {
+	width: 60%;
+	height: 30px;
+	margin-top: 20px;
+}
+
+/* 아이디 / 비번 라벨 */
+/* .int-area > label {
+    이동할 때 position
+    position: relative;
+    top: -30px;
+    font-size: 18px;
+    color: #fff;
+    left: -110px;
+} */
+
+/* 버튼 */
+/* .btn-area > button {
+    width: 10%;
+    height: 50px;
+    color: #fff;
+    font-size: 20px;
+    bottom: 0px;
+    border: none;
+    border-radius: 20px;
+    background-color: #166cea;
+    position: center, fixed;
+    
+} */
+/* 하단 링크태그 정렬 */
+.caption_ul{
+    /* 정렬에는 display */
+    display: flex;
+    margin-top: 20px;
+}
+.caption_ul > li {
+    list-style: none;
+    font-size: 20px;
+}
+/* 가상화 */
+body::before{
+    content: "";
+    position: absolute;
+    top: 0; right: 0; bottom: 0; left: 0;
+    background-color: rgba(0, 0, 0, 0.7);
+    z-index: 1;
+}
+
+.caption_ul a {
+    font-size: 20px;
+    color: #fff;
+    text-decoration: none;
+}
+/* input 안 텍스트 데코 */
+.int-area input:focus + label {
+    top: -55px;
+    font-size: 13px;
+    color: #166cea;
+}
+/* input 에 required 가 들어가 있어서 가능 */
+.int-area input:valid + label {
+    top: -55px;
+    font-size: 13px;
+    color: #166cea;
+}
+.int-area label {
+    /*
+        tansition all 은 top -52px로 이동될 때
+        모든 옵션(all)에 대해서 애니메이션 효과를 발생.
+        .5초 동안 ease 효과를 주어 천천히 시작되어 
+        중간에 빨라지고 다시 느려지게 함
+    */
+    transition: all, .5s ease;
+}
+/* 해당 태그에 warning 속성이 있어야 함 */
+.int-area label.warning{
+    color: red;
+    animation-duration: .2s ease;
+    animation-iteration-count: 3;
+}
+
+.join_content{
+	font-size:10px;
+	font-weight:700px;
+}

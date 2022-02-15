@@ -1,0 +1,203 @@
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<html lang="ko">
+<head>
+<%@include file="/WEB-INF/inc/frame.jsp" %>
+<link rel="stylesheet" type="text/css" href="resources/css/style_home.css">
+<title>Sharing Information Site</title>
+<script>
+	window.onload= function() {
+		$(function() {
+			$(".header").load("frame/header.do");
+			$("#sub_title_div").load("frame/sub_title.do");
+			$("#page_footer").load("frame/footer.do");
+		});
+		
+		let today = new Date();   
+		let datetime = document.getElementsByClassName("datetime");
+		
+		for (let index = 0; index < datetime.length; index++) {
+		    datetime[index].innerHTML=today.getFullYear() + '/' + (today.getMonth()+1) + '/' + today.getDate();
+		}
+		
+		let img_files=[
+		     "resources/images/adver_fire.jpg"
+		    ,"resources/images/adver_math.jpg"
+		    ,"resources/images/adver_virus.jpg"
+		];
+		let textList=[
+		     "@Global Warming"
+		    ,"@Millennium Prize Problems"
+		    ,"@COVID-19"
+		]
+		let adverArea = document.getElementById("adverArea");
+		let adverText = document.getElementById("adverText");
+		let idx = 0;
+	
+	          // 초마다 다시 불러옴
+		function fn_change_img() {
+		    adverArea.style.backgroundImage="url("+img_files[idx]+")";
+		    adverText.innerHTML=textList[idx];
+		    idx++;
+			if(idx%3==0) {
+			    idx=0;
+			}
+		    adverArea.style.transitionDuration="2s";
+		}
+
+          // 시간간격 주기
+		setInterval(function(){
+		    fn_change_img()
+		},3000);
+      }
+</script>
+</head> <!-- ========================================================== -->
+
+<body>
+<div id="wrap"> <!--           가장 큰 틀(기준)            -->
+
+    <div class="adverDiv">
+        <div id="adverArea">
+            <div id="adverText">@Global Warming</div>
+        </div>
+    </div> <!-- adverDiv -->
+
+
+<!-- ===================================================================== -->
+    <div class="header"></div> <!-- header -->
+    <div id="sub_title_div"></div> <!-- sub_title_div -->
+<!-- ===================================================================== -->
+
+
+    <div id="searchBackground">
+        <div class="searchArea">
+            <form action="">
+                <input type="text" id="input_search" name="input_search"
+                        value="" placeholder="Search">
+                <span>검 색</span>
+            </form>
+        </div>
+    </div>
+
+
+<!-- ===================================================================== -->
+
+
+    <div id="infoBackground">
+        <h2>Today Topic</h2>
+        <div class="boundary"></div>
+
+        <div class="infoArea">
+
+            <div class="infoImg">
+                <h2>오늘의 토픽</h2>
+                <p>인간 아데노바이러스 감염에 대한 NK 세포 매개 보호 지시</p>
+            </div>
+
+            <div class="description">
+                <ul>
+                    <li>[인용수]:&nbsp;2800건</li>
+                    <li>[Imfact Factor]:&nbsp;100건</li>
+                    <li>[최신성]:&nbsp;2020-10-10</li>
+                    <li>[희소성]:&nbsp;높음</li>
+                    <li>[최근토픽]:&nbsp;작년 이슈</li>
+                    <li>[내&nbsp;&nbsp;&nbsp;용]:<br>선천적 면역 체계에 속하는 NK 세포가 어떠한 정보를 바탕으로 정상세포와 비정상세포를 구분하여 공격하는지에 관하여...</li>
+                </ul>
+            </div>
+
+            <div class="news"><p>News</p><br>
+                <article>
+                    <div class="datetime"></div>
+                    <div>USER_INFO : ${sessionScope.USER_INFO }</div>
+                </article>
+                <article>
+                    <div class="datetime"></div>
+                    <div>아무내용이나 넣어주세요</div>
+                </article>
+                <article>
+                    <div class="datetime"></div>
+                    <div>아무내용이나 넣어주세요</div>
+                </article>
+                <article>
+                    <div class="datetime"></div>
+                    <div>아무내용이나 넣어주세요</div>
+                </article>
+                <article>
+                    <div class="datetime"></div>
+                    <div>아무내용이나 넣어주세요</div>
+                </article>
+                
+            </div>
+        </div>
+    </div>
+
+
+<!-- ===================================================================== -->
+
+
+    <div id="noticeBackground">
+        <h2>Academic Journal Site</h2>
+        <div class="boundary"></div>
+
+        <div class="noticeArea">
+            <div>
+                <a href="https://www.riss.kr/">
+                    <img src="resources/images/logo_riss.png" alt="사진없음">
+                </a><br><br>
+                <p>학술연구정보서비스(Research Information Sharing Service, RISS)는 대한민국 교육부 출연기관 한국교육학술정보원에서 제공하는 학술연구정보화시스템이다</p>
+            </div>
+
+            <div>
+                <a href="https://www.science.org/">
+                    <img src="resources/images/logo_science.svg" alt="사진없음">
+                </a><br><br>
+                <p>미국과학진흥회(American Association for the Advancement of Science)에서 발간하는 과학 학술지이다.</p>
+            </div>
+            
+            <div>
+                <a href="https://www.koar.kr/main/main.do">
+                    <img src="resources/images/logo_koar.svg" alt="사진없음">
+                </a><br><br>
+                <p>한국과학기술정보연구원(KISTI)이 연구자들의 학술정보 접근성 증대를 위한 국가 오픈액세스 플랫폼(KOAR) 서비스이다.</p>
+            </div>
+        </div>
+    </div>
+
+
+<!-- ===================================================================== -->
+
+    <div id="sub_info">  <!--           5단계           -->
+        <ul>
+            <li>
+                <div class="last_bg1">
+                    <h1 id="content">Question</h1>
+                    <p>저작권 관련 문의</p>
+                    <div class="more2">
+                        <p>더 알아보기</p>
+                    </div>
+                </div> 
+            </li>
+            
+            <li>
+                <div class="last_bg2">
+                    <h1>Approval</h1>
+                    <p>오픈 소스 학술지 등록</p>
+                    <div class="more2">
+                        <p>더 알아보기</p>
+                    </div>
+                </div>
+            </li>
+        </ul>
+    </div><!-- main_text2 -->
+
+
+
+<!-- ===================================================================== -->
+
+
+    <footer id="page_footer"></footer><!-- footer -->
+
+</div> <!-- wrap -->
+</body>
+</html>

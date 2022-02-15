@@ -1,0 +1,124 @@
+@charset "UTF-8";
+
+.main_div{
+    display: flex;
+    height: auto;
+}
+.left_div {
+	/* background: red; */
+	width: 30%;
+	height: 100%;
+	display: inline-block;
+}
+.center_div {
+	/* background: blue; */	
+	width: 70%;
+	height: 100%;
+	display: inline-block;
+	margin-top : 30px;
+}
+.right_div {
+	/* background: green; */
+	width: 20%;
+	height: 100%;
+	display: inline-block;
+}
+
+input[type="radio"] {display: none;}
+input[type="radio"] + label{
+	display: inline-block;
+	padding:20px;
+	background:#ccc;
+	color: #999;
+	font-size: 14px;
+	border-radius : 10px;
+	cursor: pointer;
+}
+input[type="radio"]:checked + label {
+	background: #aaa;
+	color: #000;
+}
+
+.conbox { 
+/* 	background: #aaa; */
+	width: 100%;
+	height:1200px;
+	margin:0; 
+	position:relative;
+	top: -8px;
+	display: none;
+}
+input[id="tab01"]:checked ~ .con1 {display: block;}
+input[id="tab02"]:checked ~ .con2 {display: block;}
+input[id="tab03"]:checked ~ .con3 {display: block;}
+
+
+table.table-design {
+	width:100%;
+	border-collapse: collapse;
+	text-align: left;
+	line-height: 1.5;
+	border-bottom: 1px solid #ccc;
+}
+table.table-design > thead th {
+	padding: 10px;
+	padding-top: 13px;
+	font-weight: bold;
+	vertical-align: top;
+	color: #ffffff;
+	background: #000000;
+	border-bottom: 2px solid #c00;
+	margin: 20px 10px;
+	text-align:center;
+}
+table.table-design tbody th {
+	width: 5%;
+	padding: 10px;
+}
+table.table-design td {
+	width: 20%;
+	padding: 10px;
+	vertical-align: top;
+}
+table.table-design .even {
+	background: #dfe1db;
+}
+
+.fas{
+	cursor:pointer;
+	margin-top : 5px;
+}
+
+.conbox.con1{
+	height : 700px;
+	margin-bottom : 100px;
+	overflow-x:hidden;
+	overflow-y:scroll;
+}
+
+.conbox.con1 table > tbody td{
+	border-bottom: 1px solid #d3d7cf;
+    padding: 7px;
+    vertical-align: middle;
+
+}
+
+.conbox.con1 table > tbody td:nth-child(n+4):nth-child(-n+6){
+	text-align : center;
+}
+
+.conbox.con2{
+	border : solid 15px black;
+	width : 1100px;	
+}
+
+.test{
+	width: 100%;
+	height:7px;
+	margin:0; 
+	position:relative;
+	top: -8px;
+	background-color: black;
+}
+
+

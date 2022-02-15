@@ -1,0 +1,177 @@
+<%@page import="javax.imageio.ImageIO"%>
+<%@page import="java.awt.image.BufferedImage"%>
+<%@page import="java.net.URL"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!--  JSP에서 jsoup을 사용하기 위해 import -->
+<%@ page import="org.jsoup.Jsoup" %> 
+<%@ page import="org.jsoup.nodes.Document" %>
+<%@ page import="org.jsoup.nodes.Element" %>
+<%@ page import="org.jsoup.select.Elements" %>
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>NextIT</title>
+<link rel="stylesheet" type="text/css" href="resources/css/style_header.css">
+<link rel="stylesheet" type="text/css" href="resources/css/style_sub_title.css">
+<link rel="stylesheet" type="text/css" href="resources/css/style_footer.css">
+<link rel="stylesheet" type="text/css"  href="resources/css/style_thesis_API.css">
+<script src="http://code.jquery.com/jquery-latest.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+.button_div{
+    width: 1000px;
+    text-align: right;
+    margin-top:20px;
+}
+</style>
+</head>
+<body>
+	<%
+		Elements title[] =new Elements[2];
+		Elements txt[] =new Elements[2];
+		Elements time[] =new Elements[2];
+		String urls[] = new String[2];
+		String links[] =new String[2];
+		for(int i = 0 ; i < 2 ; i++){
+			Document url = Jsoup.connect(
+					"https://search.naver.com/search.naver?query=오미크론&where=news&ie=utf8&sm=nws_hty")
+					.get();
+			Elements postsTitle = url.getElementsByAttributeValue("class", "news_tit");
+			Element postTitle = postsTitle.get(i);
+			title[i] = postTitle.select("a");
+			System.out.println("제목 : " + title[i].text());
+			
+			Elements postsTxt = url.getElementsByAttributeValue("class", "api_txt_lines dsc_txt_wrap");
+			Element postTxt = postsTxt.get(i);
+			txt[i] = postTxt.select("a");
+			System.out.println("내용 : " + txt[i].text());
+			
+			Elements postsTime = url.getElementsByAttributeValue("class", "info");
+			Element postTime = postsTime.get(i);
+			time[i] = postTime.select("span");
+			System.out.println("게재시간 : " + time[i].text());
+			
+			Elements postsImg = url.getElementsByAttributeValue("class", "thumb api_get");
+			Element postImg = postsImg.get(i);
+			Elements img = postImg.select("img");
+			for (Element e : img) {
+	            urls[i] = e.getElementsByAttribute("src").attr("src");
+	            URL imgUrl = new URL(urls[i]);
+	            BufferedImage jpg = ImageIO.read(imgUrl);
+			}
+			System.out.println("게재사진링크 : " + urls);
+			
+			Elements postsLink = url.getElementsByAttributeValue("class", "news_tit");
+			Element postLink = postsLink.get(i);
+			Elements link = postLink.select("a");
+			for (Element e : link) {
+	       	links[i] = e.getElementsByAttribute("href").attr("href");
+			}
+			System.out.println("뉴스링크 : " + links[i]);
+			
+			
+		}
+		%>
+
+    <div id="wrap">
+    	<!-- header -->
+       <div class="header">
+   		</div>
+   		<!-- sub_title_div -->
+		<div id="sub_title_div">
+		</div>
+		
+		
+       <!-- chart -->
+		<div class="contents">
+			<div>
+				SIS 회원 관심 주제분야
+				<canvas id="myChart"></canvas>
+			</div>
+			<div class="news_div">
+				키워드 시사 & 뉴스<hr>
+				<div class="news0">
+					<div>
+						<a href="<%=links[0] %>"><font size="4.5"><%=title[0].text() %></font></a>
+					</div>
+					<div>
+						<%=txt[0].text() %>
+					</div>
+					<div>
+						<%=time[0].text() %>
+					</div>
+					<img src="<%=urls[0] %>">
+				</div>
+				<div class="news1">
+					<div>
+						<a href="<%=links[1] %>"><font size="4.5"><%=title[1].text() %></font></a>
+					</div>
+					<div>
+						<%=txt[1].text() %>
+					</div>
+					<div>
+						<%=time[1].text() %>
+					</div>
+					<img src="<%=urls[1] %>">
+				</div>
+			</div>
+		</div>
+		
+		
+		<!-- footer -->
+		<footer id="page_footer">
+		</footer>
+   </div>    
+</body>
+<script>
+$(function(){
+    $(".header").load("frame/header.do");
+    $("#sub_title_div").load("frame/sub_title.do");
+    $("#page_footer").load("frame/footer.do");
+}); 
+
+var ctx = document.getElementById('myChart').getContext("2d");
+var myChart = new Chart(ctx, {
+	type: 'bar'
+	, data: {
+		labels: ['사회과학', '의약학', '어문학', '인문과학', '공학', '자연과학']
+		, datasets: [{ 
+			label: '# of Votes'
+			, data: [12, 19, 3, 5, 2, 3]
+			, backgroundColor: [ 
+				'rgba(255, 99, 132, 0.2)'
+				, 'rgba(54, 162, 235, 0.2)'
+				, 'rgba(255, 206, 86, 0.2)'
+				, 'rgba(75, 192, 192, 0.2)'
+				, 'rgba(153, 102, 255, 0.2)'
+				, 'rgba(255, 159, 64, 0.2)'
+				]
+			, borderColor: [
+				'rgba(255, 99, 132, 1)'
+				, 'rgba(54, 162, 235, 1)'
+				, 'rgba(255, 206, 86, 1)'
+				, 'rgba(75, 192, 192, 1)'
+				, 'rgba(153, 102, 255, 1)'
+				, 'rgba(255, 159, 64, 1)'
+				]
+			, borderWidth: 1
+		}]
+	}
+		, options: {
+			scales: {
+				yAxes: [{
+					ticks: {
+						beginAtZero: true
+					}
+				}]
+			} 
+		}
+
+});
+
+
+
+</script>
+</html>

@@ -1,0 +1,463 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="_csrf" content="${_csrf.token}">
+<meta name="_csrf_header" content="${_csrf.headerName}"/>
+<title>Recommendation</title>
+<link rel="stylesheet" type="text/css" href="/resources/css/style_recommend.css">
+<link rel="stylesheet" type="text/css" href="/resources/css/style_footer.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" 
+	integrity="sha512-+4zCK9k+qNFUR5X+cKL9EIR+ZOhtIloNl9GIKS57V1MyNsYpYcUrUeQc9vNfzsWfV28IaLL3i96P9sdNyeRssA==" 
+	crossorigin="anonymous" />
+<%@include file="/WEB-INF/views/frame/setting_file.jsp" %>
+<%@include file="/WEB-INF/inc/frame.jsp" %>
+<%@include file="/WEB-INF/inc/onload.jsp" %>
+<script type="text/javascript">
+let header = $('meta[name="_csrf_header"]').attr("content");
+let token = $('meta[name="_csrf"]').attr("content");
+
+let memId = "${sessionScope.USER_INFO.username}";
+let bookMark = {"memId":memId};
+let transValue = null;
+
+function ranked_xml(){
+	var i = 0;
+    $.ajax({
+		 url: 'rankedAPI.do'
+		,type: 'post'
+		,contentType:"application/x-www-form-urlencoded; charset=UTF-8;"
+		,dataType:'xml'
+		,beforeSend : function(xhr){
+			xhr.setRequestHeader(header, token);
+		}
+		,success: function(data) {
+			console.log("api 불러오기 성공::");
+			console.log(data);
+			$(data).find('item').each(function(){
+				var title = $(this).find("title").text(); // 논문이름
+				var name = $(this).find("authors name").text(); // 저자
+				var publisher = $(this).find("publisher name").text(); // 발행기관
+				var issue_yymm = $(this).find("issue yymm").text(); // 발행일
+				var pages = $(this).find("pages").text(); // 페이지 수
+					i = i + 1
+					let innerText ="";
+		        	innerText +="<tr>";
+		        	innerText +="<th>"+(i)+"</th>";
+		        	innerText +="<td>"+title+"</td>";
+		        	innerText +="<td>"+name+"</td>";
+		        	innerText +="<td>"+publisher+"</td>";
+		        	innerText +="<td>"+issue_yymm+"</td>";
+		        	innerText +="<td>"+pages+"</td>";
+		        	innerText +="</tr>";
+			       $(".con3 > table > tbody").append(innerText);
+			});
+			}
+		,error: function(e) {
+			alert("error"+e.status);
+		}
+    });    
+
+}
+
+function fn_road_bookmark(){
+	var i = 0;
+    $.ajax({
+		 url: "<c:url value='/bookmark/getBookmarkList'/>"
+		,type: 'post'
+		,data: bookMark
+		,dataType:'json'
+		,beforeSend : function(xhr){
+			xhr.setRequestHeader(header, token);
+		}
+		,success: function(map) {
+			console.log("success");
+			let str = "";
+			$.each(map.data, function(i, elt) {
+				console.log(i);
+				str +="<tr class='row'>";                           
+				str +="<th>"+(i+1)+
+				"<input type='hidden' value='"+elt.thesNo +"'></th>";               
+				str +="<td><a href='thesisView.do?thesNo="+elt.thesNo+"&&memId="+memId+"'>"+elt.thesTitle+"</a></td>";             
+				str +="<td>"+elt.thesAuth+"</td>";              
+				str +="<td>"+elt.categoryNm+"</td>";         
+				str +="<td>"+elt.markDate+"</td>";             
+				str +="<td><i class='fas fa-trash-alt' style='color:#2FAF53;font-size:x-large;'></i></td>";             
+				str +="</tr>";                          
+			});
+			$(".con1 > table > tbody").append(str);  	
+			
+		}
+		,error: function(e) {
+			alert("error"+e.status);
+		}
+    });    
+
+}
+
+</script>
+</head>
+
+<body>
+<div class="content">
+
+	<!-- ===================================================================== -->
+    <div class="header"></div> <!-- header -->
+    <div id="sub_title_div"></div> <!-- sub_title_div -->
+	<!-- ===================================================================== -->
+	<div class="main_div">
+		<div class="left_div"></div>
+		
+		<div class="center_div">
+			<input type="radio" name="tabmenu" id="tab01" >
+			<label for="tab01">bookmark</label>
+			<input type="radio" name="tabmenu" id="tab02" checked>
+			<label for="tab02">AI_Keyword</label>
+			<input type="radio" name="tabmenu" id="tab03">
+			<label for="tab03">Ranking Top 10</label>
+			<div class="test"></div>
+			<div class="conbox con1">
+			   	<table class="table-design">
+			   	 <colgroup>
+					<col width="1%" />
+					<col width="30%" />
+					<col width="100px" />
+					<col width="100px" />
+					<col width="200px" />
+					<col width="5%" />
+	          </colgroup>
+				  <thead>
+				  <tr>
+				  		    <th>No</th>
+							<th>논문이름</th>
+							<th>저자</th>
+							<th>카테고리</th>
+							<th>추가날짜</th>
+							<th>해제</th>
+				  </tr>
+				  </thead>
+				  <tbody>
+						<!-- 즐찾논문 List -->
+				  </tbody>
+				</table>
+			</div>
+			<!--  con2 = AI_KEYWORD 세션 -->
+			<div class="conbox con2">
+			 	  <table class="table-design">
+				  	<tr>
+				  		<td>
+				  		 <div class="con2_div">
+				  			<table class="innerTb" cellspacing='0'>
+				  			  <caption><strong>${sessionScope.USER_INFO.member.memName }</strong> 님의 관심 키워드 <strong>TOP10 &nbsp;
+				  			  <i class="fas fa-trophy" style="color:#FFAE00;font-size:x-large;"></i></strong></caption>
+			  					<colgroup>
+									<col width="1%" />
+									<col width="50%" />
+									<col width="5%" />
+					    		 </colgroup>
+					        <thead>		
+				  				<tr>
+				  					<th> RANK  </th>
+				  					<th> - 키워드 -</th>
+				  					<th> 포함횟수 </th>
+				  				</tr>
+							 </thead>
+							 <tbody>
+							   <c:forEach items="${keywordList}" var="keywordList" varStatus="st">
+							     <c:if test="${st.count lt 11}">
+					  				<tr>
+					  					<td>${st.count }</td>
+					  					<td class="td_keyword"><span>${keywordList.thesKeyword }
+					  					   <input type="hidden" name="td_keyword" value="${keywordList.thesKeyword }" /></span></td>
+					  					<td>${keywordList.memKeyCnt }</td>
+					  				</tr>
+					  			  </c:if>
+							   </c:forEach>
+				  			</tbody>
+				  			</table>
+				  		 </div>	
+				  		</td>
+				  		<td>
+				  			<div class="con2_div second">
+				  				<h4><strong>KEYWORD [ <label class="listKeyword" id="labelKeyword">선택</label> ]</strong> 관련 논문 리스트</h4>				
+				  			 <div id="tb_scroll">
+				  			   <table class="innerTb second" id="kewordThesisTable">
+				  			       <!--  ajax로 그리기  -->
+				  			   </table>
+				  			 </div>
+				  		 </div>
+				  		</td>
+				  	</tr> 	
+				  </table>
+				  <div class="con2_div third">
+				    <table class="table-design">
+				  	   <tr>
+				  		  <td class="text_center">
+				  			 <h3 class="h3"> - 관심사가</h3> &nbsp;
+				   			<select id="id_searchCommCode" name="searchCommCode" onchange="changeSelect()">
+								<option value="">-- 전체 --</option>
+								<c:forEach items="${codeList}" var="code">
+									<option value="${code.commCd}" 
+									   ${memberConCode[0] eq code.commCd ? "selected='selected'" : "" }
+									>${code.commNm}</option>
+								</c:forEach>
+							</select>
+							<h3 class ="h3">인 회원들의 누적조회리스트 - </h3><br><br>
+								 <strong>${sessionScope.USER_INFO.member.memName }</strong>님의 관심사는 
+									    <label class="listKeyword"> 	
+									     	<c:forEach items="${codeList}" var="code">
+									   			<c:if test="${memberConCode[0] eq code.commCd}">
+									   					[ ${code.commNm} ] 
+									   			</c:if>
+									   			<c:if test="${memberConCode[1] eq code.commCd}">
+									   					, [ ${code.commNm} ]
+									   			</c:if>
+											</c:forEach>
+								     </label>
+										입니다.
+								     <button type="button" class="btn btn-sea" onClick="location.href='info.do'"> 정보 수정 </button>
+								<div id="tb_scroll2">
+				  			   			<table class="innerTb third" id="codeRecommTable">
+				  			       <!--  ajax로 그리기  -->
+				  			   			</table>
+				  			   </div>
+				  			</td>
+				  		</tr>
+				  	</table>	
+				  </div>
+			</div>
+			<div class="conbox con3">
+				<table class="table-design">
+					<thead>
+						<tr>
+							<th>No</th>
+							<th>논문이름</th>
+							<th>저자</th>
+							<th>발행기관</th>
+							<th>발행년월</th>
+							<th>페이지</th>
+						</tr>
+					</thead>
+					<tbody>
+					  <!-- 추천논문 list -->
+				  </tbody>
+				</table>
+			</div>
+		</div>
+		
+		<div class="right_div"></div>
+	</div>
+	<!-- ===================================================================== -->
+    <footer id="page_footer"></footer><!-- footer -->
+		
+</div>
+</body>
+<script>
+
+//bookmark
+// 즐겨찾기 삭제
+$('.con1').on('click','.fas', function(e) {
+	e.preventDefault();
+	if(confirm("즐겨찾기 해제합니다.")){
+	$icon=$(this);
+	$row =$icon.closest("tr.row");
+	let thNo =$row.find("input").val();
+	console.log("thNo" + thNo);
+
+	 $.ajax({
+		url:"<c:url value='/bookmark/deleteBookmark'/>"
+		,type : "post"
+		,dataType: "JSON"
+		,data : {"thesNo" : thNo, "memId": memId}
+		,beforeSend : function(xhr){
+			xhr.setRequestHeader(header, token);
+		}
+		,success : function(map){
+			console.log("delete success!! ");
+			$row.remove();
+		},error : function(req,st,err){
+		    alert("삭제 연결 실패");
+		}
+	});
+	}
+});
+//recommend
+// 키워드 클릭하면 나오는 테이블 ajax
+$(".td_keyword").click(function(){
+	let keyword = $(this).find("input[name=td_keyword]").val();
+	console.log("ajax 안에 keyword 받아오나? ::: " + keyword);
+	$('#labelKeyword').text(keyword);
+	
+	 $.ajax({
+			url:"<c:url value='/recommend/getKeywordThesisList'/>"
+			,type : "post"
+			,dataType: "JSON"
+			,data : {"thesKeyword" : keyword}
+			,beforeSend : function(xhr){
+				xhr.setRequestHeader(header, token);
+			}
+			,success : function(resultmap){
+				if(resultmap.result){
+					let str = "";
+					$.each(resultmap.data, function(i, elt){
+					  if(i==0){	
+						//키워드 변경 셋팅
+						str += "	<colgroup>";							
+						str += '		<col width="1%" />';							
+						str += '		<col width="50%" />';							
+						str += '		<col width="5%" />';							
+						str += "	 </colgroup>";							
+						str += "<thead>		";							
+						str += "	<tr>";							
+						str += "		<th> 카테고리  </th>";							
+						str += "		<th> 논문제목 </th>";							
+						str += "		<th> 인용횟수 </th>";							
+						str += "	</tr>";
+						str += " </thead>";							
+						str += " <tbody>";							
+					  }
+						str += "  	<tr><td>"+elt.commNm+"</td>";
+						str += "  		<td class='td_title'><span><a href='thesisView.do?thesNo="+elt.thesNo+"'>"+elt.thesTitle;
+						str +=	"	    <input type='hidden' name='td_title' value='"+elt.thesTitle+"'></span></td>";
+						str += "  		<td>"+elt.thesImpFactor+"</td></tr>";
+					});
+					str += "</tbody>";							
+					console.log(str);
+					$('#kewordThesisTable').empty();
+					$('#kewordThesisTable').append(str);
+				}//end if
+				
+		  },error : function(req,st,err){
+			    alert("삭제 연결 실패");
+		}
+	});
+	fn_translate2(); // 툴팁함수
+	 
+});
+
+// select changeEvent
+function changeSelect(){
+	fn_CodeRecommendList();
+}
+
+
+// 추천 코드 논문 리스트 function
+function fn_CodeRecommendList(){ 
+	let commCd = $('#id_searchCommCode').val();
+	console.log("commCd ::: " + commCd);
+	 $.ajax({
+			url:"<c:url value='/recommend/getCodeThesisList'/>"
+			,type : "post"
+			,dataType: "JSON"
+			,data : {"commCd" : commCd}
+			,beforeSend : function(xhr){
+				xhr.setRequestHeader(header, token);
+			}
+			,success : function(resultmap){
+				if(resultmap.result){
+					let str = "";
+					$.each(resultmap.data, function(i, elt){
+					  if(i==0){	
+						//키워드 변경 셋팅
+						str += "	<colgroup>";							
+						str += '		<col width="10%" />';							
+						str += '		<col width="50%" />';							
+						str += '		<col width="10%" />';							
+						str += '		<col width="10%" />';							
+						str += "	 </colgroup>";							
+						str += "<thead>		";							
+						str += "	<tr>";							
+						str += "		<th> 카테고리  </th>";							
+						str += "		<th> 논문제목 </th>";							
+						str += "		<th> 인용횟수 </th>";							
+						str += "		<th> 조회수 </th>";							
+						str += "	</tr>";
+						str += " </thead>";							
+						str += " <tbody>";							
+					  }
+					 	str += "  	<tr><td>"+elt.categoryNm+"</td>";
+						str += "  		<td class='td_title'><span><a href='thesisView.do?thesNo="+elt.thesNo+"'>"+elt.thesTitle;
+						str +=	"	    <input type='hidden' name='td_title' value='"+elt.thesTitle+"'></span></td>";
+						str += "  		<td>"+elt.thesImpFactor+"</td>";
+						str += "  		<td>"+elt.cnt+"</td></tr>";
+					 });
+					str += "</tbody>";							
+					console.log(str);
+			
+					$('#codeRecommTable').empty();
+					$('#codeRecommTable').append(str);
+				}//end if
+				
+		  },error : function(req,st,err){
+			    alert("삭제 연결 실패");
+		}
+	});
+	
+}
+
+
+// 단어번역 툴팁 튀어나오깅 
+function fn_translate(){
+	$(".td_keyword").hover(function(){
+		let transKey = $(this).find("input[name=td_keyword]").val();
+		console.log("transKey = "  + transKey);
+		 $.ajax({
+				url:"<c:url value='/recommend/keywordTranslate'/>"
+				,type : "post"
+				,dataType: "JSON"
+				,data : {"thesKeyword" : transKey}
+				,beforeSend : function(xhr){
+					xhr.setRequestHeader(header, token);
+				}
+				,success : function(resultmap){
+					transValue = resultmap.data;
+				},error : function(req,st,err){
+				    console.log("파파고 일일한도초과");
+				}
+		});
+		 	console.log("transValue= " + transValue);
+			$(this).find("span").attr("title", transValue);
+	});
+}
+// 두번째 테이블 툴팁
+function fn_translate2(){
+	$(".td_title").hover(function(){
+		let transKey = $(this).find("input[name=td_title]").val();
+		console.log("transKey = "  + transKey);
+		 $.ajax({
+				url:"<c:url value='/recommend/keywordTranslate'/>"
+				,type : "post"
+				,dataType: "JSON"
+				,data : {"thesKeyword" : transKey}
+				,beforeSend : function(xhr){
+					xhr.setRequestHeader(header, token);
+				}
+				,success : function(resultmap){
+					transValue = resultmap.data;
+				},error : function(req,st,err){
+					console.log("파파고 일일한도초과 ");
+				}
+		});
+	 	console.log("transValue= " + transValue);
+		$(this).find("span").attr("title", transValue);
+	});
+}
+</script>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
