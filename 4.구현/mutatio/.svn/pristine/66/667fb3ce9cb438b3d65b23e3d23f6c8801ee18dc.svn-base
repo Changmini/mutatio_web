@@ -1,0 +1,150 @@
+package com.mutatio.sis.free.vo;
+
+import java.util.List;
+
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
+import org.springframework.security.taglibs.csrf.CsrfInputTag;
+
+import com.mutatio.sis.attach.vo.AttachVO;
+import com.mutatio.sis.common.valid.Modify;
+
+
+public class FreeVO {
+	
+	@NotNull(groups = {Modify.class}, message = "수정할 때 글번호 필수")
+	public int freeNo           ;
+	
+	@NotBlank(message = "비밀번호는 필수")
+	public String freePass      ;
+	
+	@NotBlank(message = "글제목은 필수")
+	public String freeTitle     ;
+	
+	@NotBlank(message = "작성자는 필수")
+	public String freeWriter    ;
+	
+	@NotBlank(message = "글분류은 필수")
+	@Size(min = 4, max = 4, message = "글분류코드가 size4가 아니네")
+	public String freeCategory  ;
+	
+	@NotBlank(message = "글 내용 필수")
+	public String freeContent   ;
+	
+	public String freeCode      ;
+	public String freeHit       ;
+	public String freeRegDate   ;
+	public String freeModDate   ;
+	public String freeDelYn	   ;
+	
+	// 코드 VO
+	private String freeCategoryNm; /*코드이름*/
+	
+	/*
+	 * // 첨부파일 (N건) private List<AttachVO> attaches;
+	 */
+	private List<AttachVO> attaches;
+	private int[] delAtchNos;
+		
+	// 작성자 닉네임 담을거
+	public String freeNickName    ;
+	
+	public int getFreeNo() {
+		return freeNo;
+	}
+	public void setFreeNo(int freeNo) {
+		this.freeNo = freeNo;
+	}
+	public String getFreePass() {
+		return freePass;
+	}
+	public void setFreePass(String freePass) {
+		this.freePass = freePass;
+	}
+	public String getFreeTitle() {
+		return freeTitle;
+	}
+	public void setFreeTitle(String freeTitle) {
+		this.freeTitle = freeTitle;
+	}
+	public String getFreeWriter() {
+		return freeWriter;
+	}
+	public void setFreeWriter(String freeWriter) {
+		this.freeWriter = freeWriter;
+	}
+	public String getFreeCode() {
+		return freeCode;
+	}
+	public void setFreeCode(String freeCode) {
+		this.freeCode = freeCode;
+	}
+	public String getFreeCategory() {
+		return freeCategory;
+	}
+	public void setFreeCategory(String freeCategory) {
+		this.freeCategory = freeCategory;
+	}
+	public String getFreeContent() {
+		return freeContent;
+	}
+	public void setFreeContent(String freeContent) {
+		this.freeContent = freeContent;
+	}
+	public String getFreeHit() {
+		return freeHit;
+	}
+	public void setFreeHit(String freeHit) {
+		this.freeHit = freeHit;
+	}
+	public String getFreeRegDate() {
+		return freeRegDate;
+	}
+	public void setFreeRegDate(String freeRegDate) {
+		this.freeRegDate = freeRegDate;
+	}
+	public String getFreeModDate() {
+		return freeModDate;
+	}
+	public void setFreeModDate(String freeModDate) {
+		this.freeModDate = freeModDate;
+	}
+	public String getFreeDelYn() {
+		return freeDelYn;
+	}
+	public void setFreeDelYn(String freeDelYn) {
+		this.freeDelYn = freeDelYn;
+	}
+	public String getFreeCategoryNm() {
+		return freeCategoryNm;
+	}
+	public void setFreeCategoryNm(String freeCategoryNm) {
+		this.freeCategoryNm = freeCategoryNm;
+	}
+	public List<AttachVO> getAttaches() {
+		return attaches;
+	}
+	public void setAttaches(List<AttachVO> attaches) {
+		this.attaches = attaches;
+	}
+	public int[] getDelAtchNos() {
+		return delAtchNos;
+	}
+	public void setDelAtchNos(int[] delAtchNos) {
+		this.delAtchNos = delAtchNos;
+	}
+	public String getFreeNickName() {
+		return freeNickName;
+	}
+	public void setFreeNickName(String freeNickName) {
+		this.freeNickName = freeNickName;
+	}
+	
+	
+	
+	
+	
+
+}

@@ -1,0 +1,183 @@
+package com.mutatio.sis.controller;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.mutatio.code.service.ICommCodeService;
+import com.mutatio.sis.code.vo.CodeVO;
+import com.mutatio.sis.exception.BizNotEffectedException;
+import com.mutatio.sis.exception.BizNotFoundException;
+import com.mutatio.sis.member.service.MemberService;
+import com.mutatio.sis.member.vo.MemberVO;
+import com.mutatio.sis.recommend.service.recommendService;
+import com.mutatio.sis.recommend.vo.RecommendVO;
+import com.mutatio.sis.thesis.service.ThesisServiceImpl;
+import com.mutatio.sis.thesis.vo.ThesisSearchVO;
+import com.mutatio.sis.thesis.vo.ThesisVO;
+import com.mutatio.translate.service.PapagoTranslate;
+@Controller
+public class RecommendController {
+	
+	@Inject
+	recommendService recommendService;
+	
+	@Inject
+	MemberService memberService;
+	
+	@Inject
+	ThesisServiceImpl thesisService;
+	
+	@Inject
+	@Qualifier("commCodeServiceImpl")
+	ICommCodeService codeService;
+	
+	@Inject
+	PapagoTranslate transService;
+	
+	
+	@ModelAttribute("codeList")
+	public List<CodeVO> getCodeList(){
+		System.out.println("getCodeList");
+		return codeService.getCodeListByParent("CC00");
+	}
+	
+	
+	@RequestMapping(value="/recommend.do")
+	public String recommend(HttpSession session, Model model) throws BizNotFoundException {
+		MemberVO member = (MemberVO) session.getAttribute("USER_INFO");
+		List<RecommendVO> keywordList= recommendService.getRecomWordList(member.getMemId());
+		String[][] memberConCodeList = memberService.getConcernField(member.getMemId());
+		String[] memberConCode = memberConCodeList[0];
+		
+		model.addAttribute("memberConCode", memberConCode);
+		model.addAttribute("keywordList", keywordList);
+		model.addAttribute("memId", member.getMemId());
+		
+		return "/recommend/recommend";
+	}
+	
+	@RequestMapping(value = "/recommend/getKeywordThesisList",  produces = "application/json; charset=UTF-8")
+	@ResponseBody
+	public Map<String, Object> getKeywordThesisList(Model model, @RequestParam(value="thesKeyword" ,required = false) String thesKeyword) throws BizNotFoundException{  
+		System.out.println("recommendThesisList Service :::: " + thesKeyword);
+		HashMap<String, Object> resultmap = new HashMap<String, Object>();
+		
+		List<RecommendVO> recoList = recommendService.getKeywordThesisList(thesKeyword);
+		resultmap.put("result", true);
+		resultmap.put("data", recoList);
+		
+		return resultmap;
+	}
+	
+	// 관심사 추천 논문리스트
+	@RequestMapping(value = "/recommend/getCodeThesisList",  produces = "application/json; charset=UTF-8")
+	@ResponseBody
+	public Map<String, Object> getCodeThesisList(Model model, @RequestParam(value="commCd" ,required = false) String commCd) throws BizNotFoundException{  
+		System.out.println("getCodeThesisList Service :::: " + commCd);
+		HashMap<String, Object> resultmap = new HashMap<String, Object>();
+		List<RecommendVO> recoList = recommendService.getCountThesisCode(commCd);
+		// 논문 리스트 뽑기
+		List<ThesisVO> thesCodeList = new ArrayList<ThesisVO>(); 
+		for(RecommendVO vo : recoList) {
+				int thNo = vo.getThesNo();
+			   ThesisVO thVO = thesisService.getThesis(thNo);
+			    if(thVO.getThesNo()== vo.getThesNo()) {
+			    	  thVO.setCnt(vo.getCnt());
+			    }
+			   System.out.println("thVO :: " + thVO.toString());
+			   thesCodeList.add(thVO);
+		}
+			
+		resultmap.put("result", true);
+		resultmap.put("data", thesCodeList);
+		
+		return resultmap;
+	}
+	
+	@RequestMapping(value = "/recommend/keywordTranslate", produces = "application/json; charset=UTF-8" )
+	@ResponseBody
+	public Map<String, Object> keywordTranslate(Model model, @RequestParam(value="thesKeyword" ,required = false) String thesKeyword) throws BizNotFoundException{  
+	// 파파고 api... json 형태 번역값 String 뽑아내기...
+	    	HashMap<String, Object> resultmap = new HashMap<String, Object>();
+			String result = transService.getTransSentence(thesKeyword);
+
+			JSONParser parser = new JSONParser();
+			JSONObject parseJson = null;
+			try {
+				parseJson = (JSONObject) parser.parse(result);
+			} catch (ParseException e) {
+				System.out.println("변환실패");
+				e.printStackTrace();
+			}
+			System.out.println("jsonParse1 = " + parseJson.get("message"));
+			parseJson = (JSONObject) parseJson.get("message");
+			parseJson = (JSONObject) parseJson.get("result");
+			String res = (String) parseJson.get("translatedText");
+			System.out.println("res = " + res); // 번역된 거 가져옴..ㅠㅠ 
+			
+			resultmap.put("result", true);
+			resultmap.put("data", res);
+			
+			return resultmap;
+	}
+	
+	@RequestMapping(value="/rankedAPI.do" ,produces = "application/xml; charset=UTF-8" )
+	@ResponseBody
+	public String recommendAPI(HttpServletRequest request) {
+	  
+	 String xmlData ="";
+     try {
+     StringBuilder urlBuilder = new StringBuilder("https://api.dbpia.co.kr/v2/search/search.xml?target=rated_art&key=ed56b347ad1068d079232d35d7e8eca0"); /*URL*/
+     
+     URL url = new URL(urlBuilder.toString());
+     
+     HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+     
+     conn.setRequestMethod("GET");
+     conn.setRequestProperty("Content-type", "application/json");             
+     
+     System.out.println("Response code: " + conn.getResponseCode());
+     BufferedReader rd;
+     if(conn.getResponseCode() >= 200 && conn.getResponseCode() <= 300) {
+         rd = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8")); 
+     } else {
+         rd = new BufferedReader(new InputStreamReader(conn.getErrorStream(), "UTF-8"));
+     }
+     StringBuilder sb = new StringBuilder();
+     String line;
+     while ((line = rd.readLine()) != null) {
+         sb.append(line);
+     }
+     rd.close();
+     conn.disconnect();
+     
+     xmlData = sb.toString();
+     } catch (Exception e) {
+         e.printStackTrace();
+     }
+	 
+	 return xmlData;
+	 }
+}

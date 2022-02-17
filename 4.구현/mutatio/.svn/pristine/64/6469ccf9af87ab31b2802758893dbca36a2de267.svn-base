@@ -1,0 +1,90 @@
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+<head>
+<%@include file="/WEB-INF/inc/frame.jsp" %>
+<%@include file="/WEB-INF/inc/onload.jsp" %>
+<link rel="stylesheet" type="text/css" href="resources/css/style_quesView.css">
+<title> View </title>
+</head>
+<body>
+<div id="wrap">
+
+   	<div class="header"></div> <!-- header -->
+    
+    <!-- ===================================================================== -->
+    
+   <div id="sub_title_div"></div> <!-- sub_title_div -->
+    
+    <!-- ===================================================================== -->
+    
+    
+    <div class="content">
+	    <form action="quesRegist.do" method="post">
+			<table class="tableView design">
+				<thead>
+					<tr>
+						<th scope="cols">Item</th>
+						<th scope="cols" colspan="4">Content</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<th scope="row">Related Thesis code</th>
+						<td colspan="4">
+							<input type="text" class="" name="quesThesisNo" 
+								value="<c:if test='${thesNo!=null}'>${thesNo}</c:if>">
+						</td>
+					</tr>
+					<tr>
+						<th scope="row">Title</th>
+						<td colspan="4">
+							<input type="text" class="" name="quesTitle" value="">
+						</td>
+					</tr>
+					<tr>
+						<th scope="row">Category</th>
+						<td colspan="4">
+							<select id="id_quesCategory" name="quesCategory">
+								<option value="">-- 전체 --</option>
+								<c:forEach items="${cateList}" var="code">
+									<option value="${code.commCd}" 
+									${searchVO.searchCategory eq code.commCd ? "selected='selected'" : "" }
+									>${code.commNm}</option>
+								</c:forEach>
+							</select>
+						</td>
+					</tr>
+	                <tr><th colspan="4" scope="row">Content</th></tr>
+	                <tr>
+						<td colspan="4" style="height: 308px;">
+							<input type="text" class="" name="quesContent" value="">  
+	                    </td>
+					</tr>
+				</tbody>
+			</table>
+			<div class="button-event">
+				<button type="submit">글 등록</button>
+				<button><a href="<%=request.getContextPath() %>/quesBoard.do">목록</a></button>
+			</div>
+		</form>
+    </div> <!-- content -->
+    
+    <footer id="page_footer"></footer><!-- footer -->
+
+</div>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+

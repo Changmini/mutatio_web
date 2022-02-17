@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mutatio.sis.member.dao.IMemberDao">
+
+	<select id="getMemberList" resultType="com.mutatio.sis.member.vo.MemberVO" 
+		parameterType="com.mutatio.sis.member.vo.MemberSearchVO">
+		SELECT
+			 mem_id
+			,mem_pass
+			,mem_name
+			,mem_mail
+			,TO_CHAR(mem_bir, 'YYYY-MM-DD') AS mem_bir
+			,mem_job		
+			,mem_reg_date	
+		FROM member
+		WHERE mem_id = #{memId}
+	</select>
+	
+	<select id="getMember" resultType="com.mutatio.sis.member.vo.MemberVO" 
+			parameterType="String">
+		SELECT
+			 mem_id
+			,mem_pass
+			,mem_name
+			,mem_mail
+			,TO_CHAR(mem_bir, 'YYYY-MM-DD') AS mem_bir
+			,mem_job		
+			,mem_reg_date	
+		FROM member
+		WHERE mem_id = #{memId}
+	</select>
+	
+	<update id="updateMember" parameterType="com.mutatio.sis.member.vo.MemberVO">
+		UPDATE member SET
+		       mem_pass=#{memPass}
+		      ,mem_name=#{memName}
+		      ,mem_mail=#{memMail}
+		      ,mem_bir=#{memBir}
+		      ,mem_job=#{memJob}
+		      ,mem_del_yn='N'
+		WHERE mem_id=#{memId}
+	</update>
+	
+	<delete id="deleteMember" parameterType="com.mutatio.sis.member.vo.MemberVO">
+		UPDATE member SET
+			mem_del_yn = 'Y'
+		WHERE mem_id=#{memId}
+	</delete>
+
+	
+	<insert id="joinMember" parameterType="com.mutatio.sis.member.vo.MemberVO">
+		INSERT INTO member (
+			   mem_id
+		    , mem_pass
+		    , mem_name
+		    , mem_mail
+		    , mem_bir
+		    , mem_del_yn
+		    , mem_mileage
+		    , mem_job
+		    , mem_reg_date
+		) VALUES (
+		      #{memId}
+		    , #{memPass}
+		    , #{memName}
+		    , #{memMail}
+		    , #{memBir}
+		    , 'N'		  
+		     , 0
+		     ,#{memJob}
+		    , SYSDATE
+		)
+	</insert>
+
+	
+	<insert id="joinConCode" parameterType="hashmap">
+		INSERT INTO concern_code (
+	    	  mem_id
+		    ,con_code
+		) VALUES (
+		     #{memId}
+		    ,#{conCode}
+		)
+	</insert>
+	
+	<select id="getConcernField" parameterType="String" resultType="String">
+		SELECT con_code
+		FROM concern_code
+		WHERE mem_id = #{memId}
+	</select>
+	
+	
+	
+	
+	
+</mapper>

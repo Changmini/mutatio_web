@@ -1,0 +1,65 @@
+package com.mutatio.sis.member.service;
+
+import java.util.List;
+
+import javax.inject.Inject;
+import javax.swing.text.Position.Bias;
+
+import org.springframework.stereotype.Service;
+
+import com.mutatio.sis.exception.BizNotEffectedException;
+import com.mutatio.sis.exception.BizNotFoundException;
+import com.mutatio.sis.member.dao.IMemberDao;
+import com.mutatio.sis.member.vo.MemberSearchVO;
+import com.mutatio.sis.member.vo.MemberVO;
+
+@Service
+public class MemberServiceImpl {
+	
+	@Inject
+	IMemberDao memberDao;
+	
+	
+	public List<MemberVO> getMemList(
+			MemberSearchVO searchVO){ // 1
+		
+		searchVO.setTotalRowCount(1000);
+		searchVO.pageSetting();
+		
+		List<MemberVO> memberList = memberDao.getMemberList( // 3
+				searchVO); // 2
+		return memberList; // 4
+	}
+	
+	public MemberVO getMember(String memId) {
+		MemberVO member = memberDao.getMember(memId);
+		return member;
+	}
+	
+	public void modifyMember(MemberVO member)
+			throws BizNotEffectedException, BizNotFoundException{
+		MemberVO vo = memberDao.getMember(member.getMemId());
+		if(vo == null) throw new BizNotFoundException();
+		int cnt = memberDao.updateMember(member);
+		if(cnt <= 0) throw new BizNotEffectedException();
+	}
+	
+	public void deleteMember(String memId) 
+			throws BizNotEffectedException, BizNotFoundException{
+		MemberVO vo = memberDao.getMember(memId);
+		if(vo == null) throw new BizNotFoundException();
+		int cnt = memberDao.deleteMember(memId);
+		if(cnt <= 0) throw new BizNotEffectedException();
+	}
+		
+	public void insertMember(MemberVO member) throws BizNotEffectedException {
+
+		MemberVO vo = memberDao.getMember(member.getMemId());
+		if (vo == null) {
+			int cnt = memberDao.insertMember(member);
+		} else {
+			throw new BizNotEffectedException();
+		}
+	}
+}
+

@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mutatio.sis.member.dao.IMemberDao">
+
+	<select id="getMemberList" resultType="com.mutatio.sis.member.vo.MemberVO" 
+		parameterType="com.mutatio.sis.member.vo.MemberSearchVO">
+		SELECT  
+			 mem_id
+        	,mem_name
+        	,mem_bir
+        	,mem_hp
+        	,mem_mail
+		FROM member
+		WHERE mem_del_yn = 'N'
+	</select>
+	
+	<select id="getMember" resultType="com.mutatio.sis.member.vo.MemberVO" 
+			parameterType="com.mutatio.sis.member.vo.MemberVO">
+		SELECT
+			 mem_id
+			,mem_name
+			,mem_pass
+			,TO_CHAR(mem_bir, 'YYYY-MM-DD') AS mem_bir
+			,mem_hp
+			,mem_mail			
+		FROM member
+		WHERE mem_id = #{memId}
+	</select>
+	
+	<update id="updateMember" parameterType="com.mutatio.sis.member.vo.MemberVO">
+		UPDATE member SET
+		       mem_pass=#{memPass}
+		      ,mem_name=#{memName}
+		      ,mem_hp=#{memHp}
+		      ,mem_mail=#{memMail}
+		      ,mem_bir=#{memBir}
+		      ,mem_hobby=#{memHobby}
+		      ,mem_job=#{memJob}
+		      ,mem_major=#{memMajor}
+		      ,mem_del_yn='N'
+		WHERE mem_id=#{memId}
+	</update>
+	
+	<delete id="deleteMember" parameterType="com.mutatio.sis.member.vo.MemberVO">
+		UPDATE member SET
+			mem_del_yn = 'Y'
+		WHERE mem_id=#{memId}
+	</delete>
+
+	<insert id="insertMember" parameterType="com.mutatio.sis.member.vo.MemberVO">
+		INSERT INTO 
+		member VALUES (
+		      #{memId}
+		    , #{memPass}
+		    , #{memName}
+		    , #{memHp}
+		    , #{memMail}
+		    , #{memBir}
+		    , 'N'
+		    , #{memHobby}
+		     , 0
+		    , #{memJob}
+		    , #{memMajor}
+		    , #{memRegDate}
+		)
+	</insert>
+	
+	<insert id="joinMember" parameterType="com.mutatio.sis.member.vo.MemberVO">
+		INSERT INTO 
+		member VALUES (
+		      #{memId}
+		    , #{memPass}
+		    , #{memName}
+		    , #{memHp}
+		    , #{memMail}
+		    , #{memBir}
+		    , 'N'		    
+		    , #{memHobby}
+		     , 0
+		    , #{memJob}
+		    , #{memMajor}
+		    , #{memRegDate}
+		)
+	</insert>
+</mapper>

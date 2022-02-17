@@ -1,0 +1,84 @@
+@charset "UTF-8";
+
+.main_div{
+    display: flex;
+    height: auto;
+}
+.left_div {
+	/* background: red; */
+	width: 30%;
+	height: 100%;
+	display: inline-block;
+}
+.center_div {
+	/* background: blue; */	
+	width: 50%;
+	height: 100%;
+	display: inline-block;
+}
+.right_div {
+	/* background: green; */
+	width: 20%;
+	height: 100%;
+	display: inline-block;
+}
+
+input[type="radio"] {display: none;}
+input[type="radio"] + label{
+	display: inline-block;
+	padding:20px;
+	background:#ccc;
+	color: #999;
+	font-size: 14px;
+	cursor: pointer;
+}
+input[type="radio"]:checked + label {
+	background: #aaa;
+	color: #000;
+}
+
+.conbox { 
+/* 	background: #aaa; */
+	width: 100%;
+	height:1200px;
+	margin:0; 
+	display: none;
+}
+input[id="tab01"]:checked ~ .con1 {display: block;}
+input[id="tab02"]:checked ~ .con2 {display: block;}
+input[id="tab03"]:checked ~ .con3 {display: block;}
+
+
+table.table-design {
+	width:100%;
+	border-collapse: collapse;
+	text-align: left;
+	line-height: 1.5;
+	border-top: 1px solid #ccc;
+	border-bottom: 1px solid #ccc;
+}
+table.table-design > thead th {
+	padding: 10px;
+	font-weight: bold;
+	vertical-align: top;
+	color: #ffffff;
+	background: #000000;
+	border-bottom: 2px solid #c00;
+	margin: 20px 10px;
+}
+table.table-design tbody th {
+	width: 5%;
+	padding: 10px;
+}
+table.table-design td {
+	width: 20%;
+	padding: 10px;
+	vertical-align: top;
+}
+table.table-design .even {
+	background: #dfe1db;
+}
+
+
+
+

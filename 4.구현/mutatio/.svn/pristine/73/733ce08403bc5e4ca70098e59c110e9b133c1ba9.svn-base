@@ -1,0 +1,116 @@
+@charset "UTF-8";
+#wrap{
+	text-align: center;
+}
+
+.content {
+	width: 100%;
+	height: 100%;
+	text-align: center;
+}
+
+
+/* table all parts setting */
+table.design {
+	width: 1000px;
+	display: inline-block;
+	border-collapse: collapse;
+	text-align: left;
+	line-height: 1.5;
+	margin: 50px 10px 20px 10px;
+	border: none;
+}
+table.design thead th {
+	width: 1000px;
+	padding: 10px;
+	font-weight: bold;
+	border-bottom: 2px solid #c00;
+	background: #dcdcd1;
+	text-align: center;
+}
+table.design tbody th {
+	padding: 10px;
+	font-weight: bold;
+	background: #ececec;
+}
+table.design tbody td {
+	padding: 10px;
+}
+
+
+
+
+/* each table height */
+table.tableView{
+	/* height: 600px; */
+}
+/* tableView */
+table.tableView tbody th {
+ 	width: 170px; 
+}
+table.tableView tbody th {
+	border-bottom: 1px solid #ccc;
+	vertical-align: top;
+}
+table.tableView tbody td {
+	border-bottom: 1px solid #ccc;
+	vertical-align: top;
+}
+
+
+
+
+table.tableEtc {
+	/* height:500px; */
+	table-layout: fixed;
+}
+/* tableEtc */
+table.tableEtc tbody tr:nth-child(4n-3) td {
+	font-weight: bold;
+}
+table.tableEtc tbody tr:nth-child(4n) {
+	border-bottom: 1px solid #ccc;
+}
+table.tableEtc tbody td {
+	width: 925px;
+	height: 20px;
+/* 	text-overflow:ellipsis;
+	overflow:hidden; */
+	/* white-space : nowrap;  */
+	/* word-break:break-all; //줄바꿈 정렬*/ 
+}
+table.tableEtc tbody th {
+	width: 5%;
+}
+
+
+/* button design */
+.btnDesign {
+	width: 1000px;
+	margin-bottom:60px;
+	text-align: left;
+}
+.btnDesign button {
+	width: 100px;
+	height: 30px;
+}
+
+
+/* create Chart Button */
+.btnDesign hr {
+	margin-top: 70px;
+}
+#chartBtn {
+	margin-top:10px;
+}
+
+/* myChart */
+#chart_div {
+	width: 1000px;
+	text-align: center;
+	margin-bottom: 50px;
+}
+
+
+
+

@@ -1,0 +1,90 @@
+@charset "UTF-8";
+
+/*CSS for a really simple responsive grid*/
+#searchBackground{font-family:Open Sans; color:#555555;}
+
+//--------------------------------------------------
+.container {
+	width: 70%;
+	height:750px; 
+	display: inline-flex;
+	position: relative;
+	text-align : center; 
+	left : 22%;
+	top: -100px;
+	margin: 0px;
+}
+
+.page-header{
+	text-align : center;
+}
+
+select{
+	margin-right : 40px;
+	padding : 5px;
+}
+
+input[type=text]{
+	margin-right : 40px;
+	padding : 5px;
+	border-radius : 9px;
+	border-width : thin;
+	width : 700px;
+}
+
+#div_cate{
+	position : relative;
+	left : 1%;
+	display : inline-block;
+}
+
+.pull-right{
+	position : relative;
+	left : 22%;
+	display : inline-block;
+}
+.pull-left{
+	position : relative;
+	left : -22%;
+	display : inline-block;
+}
+.pull-left-file{
+	position : relative;
+	left : -16%;
+	display : inline-block;
+}
+.div_title{
+	position : relative;
+	left : 1%;
+	display : inline-block;
+}
+
+
+/*踰꾪듉  */
+/*SEA GREEN BUTTON STYLES*/		
+button{
+	padding : 3px;
+	
+}
+
+.btn.btn-sea{background-color: #2FAF53; border-color: #2FAF53; 
+              color : white;
+              font-weight : bold;
+				padding-top : 4px;
+				padding-bottom : 4px;
+				padding-right : 8px;
+				padding-left : 8px;
+				border-radius : 5px;
+				font-size : 14px;
+}
+.btn.btn-sea:hover{background-color:#01a183;}
+.btn.btn-sea:active{ top: 3px; outline: none; -webkit-box-shadow: none; box-shadow: none;}
+
+
+/* �꽟癒몃끂�듃 珥덇린 �젙�젹.. �뀫�뀫*/
+.note-editing-area{
+	text-align : left;
+}
+
+
+

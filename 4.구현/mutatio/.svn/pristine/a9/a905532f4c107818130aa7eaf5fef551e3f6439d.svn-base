@@ -1,0 +1,102 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>UserView</title>
+		<%@include file="/WEB-INF/inc/frame.jsp" %>
+		<%@include file="/WEB-INF/inc/onload.jsp" %>
+       <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+		<script src="../resources/bootstrap-3.3.2/js/bootstrap.js"></script>
+  		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+       <link rel="stylesheet" type="text/css" href="../resources/css/style_userView.css?ddd">
+</head>
+<body>
+<div id="wrap">
+
+		<div class="header"></div>
+		<!-- header -->
+
+		<!-- ================================================================== -->
+
+		<div id="sub_title_div"></div>
+		<!-- sub_title_div -->
+
+		<!-- ================================================================== -->
+	<div class="container">
+		<div class="contents">
+			<div class="content01">
+				<div class="c_h2">
+					<h2>회원정보</h2>
+				</div>
+			</div>
+			<div id="div_table">
+				<table cellspacing='0'>		
+					<tbody>
+						<tr>
+							<th>Id</th>
+							<td>${member.memId}</td>
+						</tr>
+						<tr>	
+							<th>회원명</th>
+							<td>${member.memName}</td>
+						</tr>
+						<tr>
+							<th>생년월일</th>
+							<td>${member.memBir}</td>
+						</tr>
+						<tr>
+							<th>직업</th>
+							<td>${member.memJobNm}</td>
+						</tr>
+						<tr>
+							<th>관심분야</th>
+							<td>${member.conCodeName[0]},&nbsp;&nbsp;${member.conCodeName[1]}</td>
+						</tr>
+						<tr>
+							<th>이메일주소</th>
+							<td>${member.memMail}</td>
+						</tr>			
+						<tr>
+							<th>마일리지</th>
+							<td>${member.memMileage}</td>
+						</tr>	
+						<tr>
+							<td colspan="6">
+								<div class="pull-left">
+									<button type="button" class="btn btn-sea"
+										onclick="location.href='userList.do'">목록으로</button>
+								</div>
+								<div class="pull-right">
+									<button type="button" id="btn_free_edit" class="btn btn-sea"
+										onclick="location.href='memberDelete.do'">정지</button>
+								</div>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<!-- div_table E -->
+		</div>
+		<!-- contents E-->
+	</div>
+	<!-- container-->
+</div>
+<!-- wrap E -->
+	<footer id="page_footer">
+    </footer><!-- footer -->
+</body>
+</html>
+
+
+
+
+
+
+
+
+

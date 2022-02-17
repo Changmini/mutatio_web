@@ -1,0 +1,195 @@
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+<head>
+<%@include file="/WEB-INF/inc/frame.jsp" %>
+<%@include file="/WEB-INF/inc/onload.jsp" %>
+<link rel="stylesheet" type="text/css" href="resources/css/style_thesisList.css">
+<title> Journals </title>
+</head>
+
+<body>
+<div id="wrap">
+	<div class="header"></div>
+	<!-- header -->
+
+	<!-- ===================================================================== -->
+
+	<div id="sub_title_div"></div>
+	<!-- sub_title_div -->
+
+	<!-- ===================================================================== -->
+	
+    <div id="searchBackground">
+        <div class="searchArea">
+            <form action="">
+                <input type="text" id="input_search" name="input_search"
+                        value="" placeholder="Search">
+                <span>검 색</span>
+            </form>
+        </div>
+    </div>
+	
+	<div id="searchBackground">
+		<div class="detailsList">
+			<form name="search" action="thesisList.do" method="post">
+				<input type="hidden" name="curPage" value="${searchVO.curPage }">
+				<input type="hidden" name="rowSizePerPage" value="${searchVO.rowSize }">
+				<div>
+					<div>
+						<h5>카테고리 :</h5>&nbsp;&nbsp; 
+						<select id="id_searchCategory" name="searchCategory">
+							<option value="">-- 전체 --</option>
+							<c:forEach items="${codeList}" var="code">
+								<option value="${code.commCd}"
+									${searchVO.searchCategory eq code.commCd ? "selected='selected'" : "" }>${code.commNm}
+								</option>
+							</c:forEach>
+						</select>
+					</div>
+					<div>
+						<h5>검색옵션 :</h5>&nbsp;&nbsp;
+						<select id="id_searchType" name="searchType">
+							<option value="T"
+								${searchVO.searchType eq "T"? "selected='selected'":"" }>제목</option>
+							<option value="W"
+								${searchVO.searchType eq "W"? "selected='selected'":"" }>작성자</option>
+							<option value="C"
+								${searchVO.searchType eq "C"? "selected='selected'":"" }>내용</option>
+						</select>
+					</div>
+				</div>
+			</form>
+			<!-- search -->
+		</div>
+		<!-- detailsList -->
+	</div>
+	<!-- searchBackground -->
+
+
+	<!-- ===================================================================== -->
+
+	<div class="container">
+		<div class="contents">
+			<div class="content01">
+				<div class="c_h2">
+					<h2>- Journals -</h2>
+				</div>
+				<div id="div_table">
+					<table cellspacing='0'>
+						<!-- cellspacing='0' is important, must stay -->
+						<colgroup>
+							<col width="55%" />
+							<col width="10%" />
+							<col width="10%" />
+							<col width="25%" />
+						</colgroup>
+
+						<thead>
+							<tr>
+								<th>Title</th>
+								<th>Auth</th>
+								<th>IF</th>
+								<th>Publishibng Date</th>
+							</tr>
+						</thead>
+						<!-- Table Header -->
+						<tbody>
+							<c:forEach items="${thesisList }" var="i">
+								<tr> 
+									<td scope="row"><a href="thesisView.do?thesNo=${i.thesNo}">${i.thesTitle }</td>
+									<td>${i.thesAuth }</td>
+									<td>${i.thesImpFactor }</td>
+									<td>${i.thesPuDate }</td>
+								</tr>
+								</c:forEach>
+						</tbody>
+					</table>
+				</div>
+				<!-- div_table -->
+				<nav class="text-center">
+					<ul class="pagination">
+						<!-- 첫 페이지  -->
+						<c:if test="${searchVO.startPageNum != 1 }">
+							<li><a href="#" data-page="1"><span aria-hidden="true">&laquo;</span></a></li>
+						</c:if>
+						<!-- 이전 페이지 -->
+						<c:if test="${searchVO.startPageNum != 1 }">
+							<li><a href="#" data-page="${searchVO.startPageNum-1 }">
+								<span aria-hidden="true">[ 이전 ] </span>
+							</a></li>
+						</c:if>
+
+						<!-- 페이지 넘버링  -->
+						<c:forEach begin="${searchVO.startPageNum }" end="${searchVO.endPageNum }" var="i">
+							<c:if test="${searchVO.curPage == i }">
+								<li class="active"><a href="#">${i }</a></li>
+							</c:if>
+
+							<c:if test="${searchVO.curPage != i }">
+								<li><a href="#" data-page="${i }">${i }</a></li>
+							</c:if>
+						</c:forEach>
+
+						<!-- 다음  페이지  -->
+						<c:if test="${(searchVO.endPageNum) != searchVO.totalPageCount}">
+							<li><a href="#" data-page="${searchVO.endPageNum+1 }">
+								<span aria-hidden="true"> [ 다음 ]</span>
+							</a></li>
+						</c:if>
+
+						<!-- 마지막 페이지 -->
+						<li><a href="#" data-page="${searchVO.totalPageCount }">
+							<span aria-hidden="true">&raquo;</span>
+						</a></li>
+					</ul>
+				</nav>
+			</div>
+			<!-- content01 -->
+		</div>
+		<!-- content -->
+	</div>
+	<footer id="page_footer"> </footer>
+	<!-- footer -->
+
+</div>
+<!-- wrap -->
+</body>
+<script type="text/javascript">
+	// 변수 정의
+	var f = document.forms['search'];
+
+	$('ul.pagination li a[data-page]').click(function(e) {
+		e.preventDefault(); // 이벤트 전파 방지,  <a>의 기본 클릭이벤트를 막기위함
+		// data-page에 있는 값을 f.curPage.value에 설정, 서브밋
+		f.curPage.value = $(this).data('page');
+		f.submit();
+	}); // ul.pagination li a[data-page]s
+	
+	// 검색 버튼 클릭
+	$(f).submit(function(e) {
+		e.preventDefault();
+		f.curPage.value = 1;
+		f.submit();
+	}); // f.submit
+	
+	// 목록 갯수 변경
+	// id_rowSizePerPage 변경되었을 때
+	// 페이지 1, 목록수 = 현재값 으로 변경 후 서브밋
+	$('#id_rowSizePerPage').change(function(e) {
+		f.curPage.value = 1;
+		f.rowSizePerPage.value = this.value;
+		f.submit();
+	}); // '#id_rowSizePerPage'.change
+	
+	// 초기화 버튼 클릭
+	$('#id_btn_reset').click(function() {
+		f.curPage.value = 1;
+		f.searchWord.value = "";
+		f.searchType.options[0].selected = true;
+		f.searchCategory.options[0].selected = true;
+	}); // #id_btn_reset.click
+</script>
+</html>

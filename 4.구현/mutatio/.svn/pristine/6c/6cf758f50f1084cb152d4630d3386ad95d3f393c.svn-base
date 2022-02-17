@@ -1,0 +1,24 @@
+package com.mutatio.sis.thesis.dao;
+
+import java.util.List;
+
+import org.apache.ibatis.annotations.Mapper;
+
+import com.mutatio.sis.thesis.vo.ThesisSearchVO;
+import com.mutatio.sis.thesis.vo.ThesisVO;
+
+@Mapper
+public interface IThesisDao {
+	
+	public int getTotalRowCount();
+	public ThesisVO getThesis(int thesNo);
+	public List<ThesisVO> getThesisList(ThesisSearchVO searchVO);
+	public List<String> getAuths(int thesNo);
+	public List<String> getKeyword(int thesNo);
+	
+	public float scarcity(int thesNo);
+	public float popular(int thesNo);
+	public float impReg(int thesNo);
+	public float freshness(int thesNo);
+	
+} // class
