@@ -6,4 +6,4 @@
 논문 이용자가 여러 검색엔진을 돌아다니며, 논문을 수집하고 비교하는 시간을 줄일 수 있도록 한다.
 
 
-![mutatio_journals](https://user-images.githubusercontent.com/54919484/155844737-e1acb24c-d2de-4a6e-977b-1ab8e21345b8.png)
+![mutatio_journals](https://user-images.githubusercontent.com/54919484/155844784-f42460ac-114a-4b23-b17e-10a61737c9ac.png)
